@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap');
+/* Contenedor general */
+* {
+  margin: 0;
+  padding: 0;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  }
+  
+  /* Navbar */
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #012E40;
+    height: 50px;
+    padding: 10px;
+}
+.logo{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+span{
+  color: #e0e0e0;
+  font-size: 1.5rem;
+  font-weight: 450;
+}
+.logo img {
+  width: 100px;  
+  height: auto;
+}
+.search-bar{
+  width: 30%;
+  padding: 10px;
+  border-radius: 15px;
+  border: none;
+}
+.pi-user{
+  font-size: 2.5rem;
+  color: #e0e0e0;
+}
+  /* Contenedor del sidebar */
+  .sidebar-container {
+    display: flex;
+  }
+  /* Sidebar */
+  .sidebar {
+    background-color: #012E40;
+    color: white;
+    padding: 15px;
+    padding-top: 30px;
+    height: calc(100vh - 50px);
+  }
+  .sidebar ul {
+    list-style: none;
+    padding-top: 20px;
+  }
+  .sidebar li {
+    padding: 10px;
+    padding-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  #new-button {
+    width: 100%;
+    padding: 10px;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  #new-button:hover {
+    background-color: #e0e0e0;
+  }
+  #icon{
+    font-size: 1.5rem;
+  }
