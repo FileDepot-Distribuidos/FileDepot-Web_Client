@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" @click="cerrar_ventana">
     <!-- Navbar -->
     <nav class="navbar">
       <div class="logo">
@@ -9,11 +9,14 @@
       <input class="search-bar" type="text" placeholder="Buscar" />
       <i class="pi pi-user" style="color: transparent;"></i>
     </nav>
-
+    
     <!-- Sidebar -->
     <div class="sidebar-container">
       <aside class="sidebar">
-        <button id="new-button">Nuevo</button>
+        <div id="new-button" @click.stop="togglePopup">
+          <h4 class="pi pi-plus-circle"></h4>
+          <h4 class="text">Nuevo</h4>
+        </div>
         <ul>
           <li @click="cambiarVista('principal')">
             <i class="pi pi-home" id="icon"></i> Principal
@@ -24,13 +27,24 @@
           <li @click="cambiarVista('almacenamiento')">
             <i class="pi pi-cloud" id="icon"></i> Almacenamiento
           </li>
-          <li>
-            <a href="/login" style="text-decoration: none; color: inherit;">
-              <i class="pi pi-sign-out" id="icon"></i> Cerrar sesión
-            </a>
+          <li @click="irHome">
+            <i class="pi pi-sign-out" id="icon"></i> Cerrar sesión
           </li>
         </ul>
       </aside>
+      <!-- Ventana agrehar -->
+      <div v-if="ventana_agregar" class="agregar" @click.stop>
+        <div class="conte">
+          <p @click="crearCarpeta">
+            <i class="pi pi-folder" style="margin-right: 8px;"></i>
+            Nueva carpeta
+          </p>
+          <p @click="subirArchivo">
+            <i class="pi pi-upload" style="margin-right: 8px;"></i>
+            Subir archivo
+          </p>
+        </div>
+      </div>
 
       <!-- Contenido dinámico -->
       <div class="contenido">
@@ -42,11 +56,12 @@
   </div>
 </template>
 
-<script>
+<script> 
 import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
 import ListaArchivos from '@/components/views/Lista_Archivos.vue';
 import ArchivosCompartidos from '@/components/views/Archivos_Compartidos.vue';
 import AlmacenamientoArchivos from '@/components/views/Almacenamiento_Archivos.vue';
+import { ventana_agregar, togglePopup, cerrar_ventana } from '../js/archivos';
 
 export default {
   name: "PrincipalView",
@@ -59,11 +74,20 @@ export default {
     return {
       vistaActual,
       cambiarVista,
+      ventana_agregar,
+      togglePopup,
+      cerrar_ventana,
     };
+  },
+  methods: {
+    irHome() {
+      this.$router.push('/homepage');
+    },
   },
 };
 </script>
 
-<style>
+<style scoped>
 @import url('../style/sidebar.css');
+
 </style>
