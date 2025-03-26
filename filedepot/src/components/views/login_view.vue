@@ -36,5 +36,4 @@
   
   <style>
   @import url('../style/login.css');
-  </style>
-  
+</style>

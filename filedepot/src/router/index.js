@@ -6,6 +6,8 @@ import AlmacenamientoArchivos from '@/components/views/Almacenamiento_Archivos.v
 import LoginView  from '@/components/views/login_view.vue'
 import NavBar from '@/components/views/navbar_view.vue'
 import RegisterView from '@/components/views/registro_view.vue'
+import HomePage from '@/components/views/Home_Page.vue'
+import NavBarHome from '@/components/views/navbar_home.vue';
 
 const routes = [
   {
@@ -43,6 +45,17 @@ const routes = [
     path: '/registro',
     name: 'Register',
     component: RegisterView,
+  },
+  {
+    path: '/HomePage',
+    name: 'Homepage',
+    component: HomePage,
+  }
+  ,
+  {
+    path: '/',
+    name: 'NavBarHome',
+    component: NavBarHome,
   }
 ];
 
