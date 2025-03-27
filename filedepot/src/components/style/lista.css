@@ -54,3 +54,13 @@
 {
   font-size: 1.5rem;
 }
+.opciones {
+  position: absolute;
+  top: 40%;
+  left: 65rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 16px;
+  z-index: 1000;
+}

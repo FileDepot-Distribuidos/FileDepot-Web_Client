@@ -1,7 +1,7 @@
 <template>
     <div class="contai">
       <h1>Almacenamiento de tu FileDepot</h1>
-      <!-- Contenido -->
+      <h4>Haz utilizado 5GB de 20BG que tiene tu almacenamiento</h4>
       <div class="content">
           <table class="file-table">
             <thead>

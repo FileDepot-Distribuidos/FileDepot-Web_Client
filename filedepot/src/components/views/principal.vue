@@ -13,7 +13,7 @@
     <!-- Sidebar -->
     <div class="sidebar-container">
       <aside class="sidebar">
-        <div id="new-button" @click.stop="togglePopup">
+        <div id="new-button" @click.stop="togglePopup('agregar')">
           <h4 class="pi pi-plus-circle"></h4>
           <h4 class="text">Nuevo</h4>
         </div>

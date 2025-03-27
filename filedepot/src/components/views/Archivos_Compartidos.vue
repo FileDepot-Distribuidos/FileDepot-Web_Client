@@ -1,7 +1,6 @@
 <template>
     <div class="contai">
       <h1>Compartidos conmigo</h1>
-      <!-- Contenido -->
       <div class="content">
           <table class="file-table">
             <thead>

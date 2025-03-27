@@ -12,8 +12,9 @@
           <input type="password" placeholder="Ingresa tu contraseña" />
           <!-- <i class="pi pi-eye-slash"></i>
         </div> -->
+        <input type="text" placeholder="Ingresa tu telefono" />
         <div class="button-container">
-            <button class="crear">Cancelar</button>
+            <button class="crear" @click="irHome">Cancelar</button>
             <button class="iniciar">crear cuenta</button>
           </div>
       </div>
@@ -28,8 +29,13 @@ export default {
   components: {
     NavBar,
   },
- 
-};</script>
+  methods: {
+        irHome() {
+        this.$router.push('/homepage');
+    },
+    }
+    }
+</script>
 <style>
 @import url('../style/login.css');
 </style>
