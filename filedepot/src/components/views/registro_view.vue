@@ -7,35 +7,59 @@
         <p>Crear una cuenta en FileDepot es muy fácil</p>
       </div>
       <div class="right-section">
-        <input type="email" placeholder="Ingresa tu correo" />
-        <!-- <div class="password-input"> -->
-          <input type="password" placeholder="Ingresa tu contraseña" />
-          <!-- <i class="pi pi-eye-slash"></i>
-        </div> -->
-        <input type="text" placeholder="Ingresa tu telefono" />
+        <input v-model="email" type="email" placeholder="Ingresa tu correo" />
+        <input v-model="password" type="password" placeholder="Ingresa tu contraseña" />
+        <input v-model="phone" type="text" placeholder="Ingresa tu teléfono" />
         <div class="button-container">
-            <button class="crear" @click="irHome">Cancelar</button>
-            <button class="iniciar">crear cuenta</button>
-          </div>
+          <button class="crear" @click="irHome">Cancelar</button>
+          <button class="iniciar" @click="register">Crear cuenta</button>
+        </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import NavBar from '@/components/views/navbar_view.vue';
+import apiClient from '@/api/api'; // Asegúrate de importar el servicio API
+import { ref } from 'vue';
 
 export default {
-  name: "RegisterView",
-  components: {
-    NavBar,
-  },
-  methods: {
-        irHome() {
-        this.$router.push('/homepage');
-    },
+  components: { NavBar },
+  setup() {
+    const email = ref('');
+    const password = ref('');
+    const phone = ref('');
+
+    const register = async () => {
+    try {
+      await apiClient.post('/auth/register', {
+        email: email.value,
+        password: password.value,
+        phone: phone.value
+      });
+
+      alert('Cuenta creada exitosamente. Ahora inicia sesión.');
+
+      // Limpiar los campos después del registro exitoso
+      email.value = '';
+      password.value = '';
+      phone.value = '';
+
+      // Redirigir al login
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Error en registro:', error);
+      alert('Error al crear la cuenta. Intenta de nuevo.');
     }
-    }
+  };
+
+
+    return { email, password, phone, register, irHome: () => window.location.href = '/homepage' };
+  }
+};
 </script>
+
 <style>
 @import url('../style/login.css');
 </style>
