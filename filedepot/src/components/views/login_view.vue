@@ -34,9 +34,12 @@ export default {
     const login = async () => {
       try {
         const response = await apiClient.post('/auth/login', { email: email.value, password: password.value });
-        authStore.setToken(response.data.token); // Guardar token en Pinia y localStorage
-        alert('Inicio de sesión exitoso' + response.data.token);
-        window.location.href = '/HomePage'; // Redirigir a la página de inicio después de iniciar sesión
+        authStore.setToken(response.data.token); 
+        alert('Login exitoso');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 3000);
+        window.location.href = '/';
       } catch (error) {
         console.error('Error en login:', error);
         alert('Error al iniciar sesión');
