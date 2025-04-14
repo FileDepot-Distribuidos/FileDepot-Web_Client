@@ -7,12 +7,18 @@
         <p>Crear una cuenta en FileDepot es muy fácil</p>
       </div>
       <div class="right-section">
-        <input v-model="email" type="email" placeholder="Ingresa tu correo" />
-        <input v-model="password" type="password" placeholder="Ingresa tu contraseña" />
-        <input v-model="phone" type="text" placeholder="Ingresa tu teléfono" />
+        <input v-model="email" type="email" placeholder="Ingresa tu correo" @input="validateEmail" />
+        <span v-if="emailError" class="error">{{ emailError }}</span>
+
+        <input v-model="password" type="password" placeholder="Ingresa tu contraseña" @input="validatePassword" />
+        <span v-if="passwordError" class="error">{{ passwordError }}</span>
+
+        <input v-model="phone" type="text" placeholder="Ingresa tu teléfono" @input="validatePhone" maxlength="10" />
+        <span v-if="phoneError" class="error">{{ phoneError }}</span>
+
         <div class="button-container">
           <button class="crear" @click="irHome">Cancelar</button>
-          <button class="iniciar" @click="register">Crear cuenta</button>
+          <button class="iniciar" @click="register" :disabled="emailError || passwordError || phoneError">Crear cuenta</button>
         </div>
       </div>
     </div>

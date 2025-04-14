@@ -1,7 +1,8 @@
 .contai {
-  padding: 50px;
+  padding: 2.5vw; /* antes 50px */
   width: 100%;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: 'Trebuchet MS', sans-serif;
+  box-sizing: border-box;
 }
 
 .content {
@@ -9,58 +10,66 @@
   overflow-y: auto;
 }
 
+/* Tabla de archivos */
 .file-table {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+  margin-top: 1.5vw;
 }
 
-.file-table th, .file-table td {
-  padding: 15px;
-  padding-right: 2.8rem;
-  text-align: center;
+/* Cabecera y filas */
+.row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1.5fr 1fr;
+  gap: 0.8vw;
   align-items: center;
+  padding: 0.8vw 0;
+  font-size: 1rem;
 }
-.file-table i {
-  font-size: 20px;
-  color: #007bff;
+
+.header {
+  font-weight: bold;
+  border-bottom: 2px solid #ccc;
+}
+
+.archivo {
+  cursor: pointer;
 }
 
 .archivo:hover {
-  background-color: rgba(128, 128, 128, 0.329);
-  cursor: pointer;
+  background-color: rgba(128, 128, 128, 0.1);
 }
-#excel::before
-{
-  color: green;
-  font-size: 1.5rem;
+
+/* Opciones desplegables */
+.opciones-wrapper {
+  position: relative;
 }
-#word::before
-{
-  color: blue;
-  font-size: 1.5rem;
-}
-#pdf::before
-{
-  color: red;
-  font-size: 1.5rem;
-}
-#image::before
-{
-  color: red;
-  font-size: 1.5rem;
-}
-#folder::before
-{
-  font-size: 1.5rem;
-}
+
 .opciones {
   position: absolute;
-  top: 40%;
-  left: 65rem;
+  right: 100px;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  padding: 16px;
-  z-index: 1000;
+  padding: 12px;
+  width: 200px;
 }
+
+.mensaje-vacio {
+  margin-top: 20px;
+  text-align: center;
+  color: gray;
+}
+
+/* Iconos */
+#excel, #word, #pdf, #image, #folder {
+  font-size: 1.5rem;
+}
+
+#excel { color: green; }
+#word { color: blue; }
+#pdf, #image { color: red; }
+
+
+

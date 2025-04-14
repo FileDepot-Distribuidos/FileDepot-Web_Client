@@ -2,7 +2,16 @@
   <div class="contai">
     <h1>Te damos la bienvenida a tu FileDepot</h1>
     <div class="content">
-        <table class="file-table">
+      <div class="file-table">
+        <div class="header row">
+          <p>Nombre</p>
+          <p>Fecha de creación</p>
+          <p>Última modificación</p>
+          <p>Tamaño</p>
+        </div>
+        <Archivo_view />
+      </div>
+        <!-- <table class="file-table">
           <thead>
             <tr>
               <th>Nombre</th>
@@ -62,7 +71,7 @@
               <td class="pi pi-ellipsis-v"></td>
             </tr>
           </tbody>
-        </table>
+        </table> -->
       </div>
       <div v-if="ventana_opciones" class="opciones" @click.stop>
         <div class="conte">
@@ -97,9 +106,13 @@
 
 <script>
 import { ventana_opciones, togglePopup, cerrar_ventana } from '../js/archivos';
+import Archivo_view from './archivo_view.vue';
 
 export default {
   name: "ListaArchivos",
+  components: {
+    Archivo_view
+  },
   setup() {
     return {
       ventana_opciones,
