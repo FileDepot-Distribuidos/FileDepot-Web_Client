@@ -21,8 +21,10 @@
 <script>
 import NavBar from '@/components/views/navbar_view.vue';
 import { useAuthStore } from '@/stores/authStore';
-import apiClient from '@/api/api'; // Asegúrate de importar el servicio API
+import apiClient from '@/api/api';
 import { ref } from 'vue';
+import { useToast } from 'vue-toastification';
+
 
 export default {
   components: { NavBar },
@@ -30,16 +32,19 @@ export default {
     const email = ref('');
     const password = ref('');
     const authStore = useAuthStore();
+    const toast = useToast();
 
     const login = async () => {
       try {
         const response = await apiClient.post('/auth/login', { email: email.value, password: password.value });
         authStore.setToken(response.data.token); 
-        alert('Login exitoso');
+
+        toast.success('Inicio de sesión exitoso');
+
         setTimeout(() => {
           window.location.href = '/';
         }, 3000);
-        window.location.href = '/';
+
       } catch (error) {
         console.error('Error en login:', error);
         alert('Error al iniciar sesión');

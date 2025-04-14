@@ -19,7 +19,7 @@
           <li @click="cambiarVista('principal')"><i class="pi pi-home"></i> Principal</li>
           <li @click="cambiarVista('compartidos')"><i class="pi pi-users"></i> Compartidos</li>
           <li @click="cambiarVista('almacenamiento')"><i class="pi pi-cloud"></i> Almacenamiento</li>
-          <li @click="irHome"><i class="pi pi-sign-out"></i> Cerrar sesión</li>
+          <li @click="signOut"><i class="pi pi-sign-out"></i> Cerrar sesión</li>
         </ul>
       </aside>
 
@@ -67,6 +67,9 @@ import ListaArchivos from '@/components/views/Lista_Archivos.vue';
 import ArchivosCompartidos from '@/components/views/Archivos_Compartidos.vue';
 import AlmacenamientoArchivos from '@/components/views/Almacenamiento_Archivos.vue';
 import { mostrarModal, nombreCarpeta, mostrarNuevaCarpeta, cerrarModal, crearCarpeta } from '@/components/js/crear_carpeta';
+// import { sign } from 'core-js/core/number';
+import { useAuthStore } from '@/stores/authStore';
+
 
 export default {
   name: "PrincipalView",
@@ -95,6 +98,11 @@ export default {
   methods: {
     irHome() {
       this.$router.push('/homepage');
+    },
+    signOut() {
+      const authStore = useAuthStore();
+      authStore.logout();
+      this.$router.push('/login');
     },
   },
 };
