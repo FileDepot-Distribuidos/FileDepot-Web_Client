@@ -3,24 +3,24 @@
     <div
       class="archivo row"
       v-for="archivo in archivos"
-      :key="archivo.id"
+      :key="archivo.idFILE"
     >
       <p>
         <i :class="obtenerIcono(archivo.type)" style="margin-right: 8px;"></i>
         {{ archivo.name }}
       </p> 
-      <p>{{ archivo.createdAt || '08/04/2025' }}</p>
-      <p>{{ archivo.updatedAt || '08/04/2025' }}</p>
-      <p>{{ archivo.tamañoMB }} MB</p>
+      <p>{{ new Date(archivo.creation_date).toLocaleDateString('en-GB') || '00/00/2000' }}</p>
+      <p>{{ new Date(archivo.last_modified).toLocaleDateString('en-GB') || '00/00/2000' }}</p>
+      <p>{{ archivo.parsedSize }}</p>
       
       <!-- Botón de opciones -->
       <i
         class="pi pi-ellipsis-v"
-        @click.stop="togglePopup('opciones', archivo.id)"
+        @click.stop="togglePopup('opciones', archivo.idFILE)"
       ></i>
 
       <!-- Opciones solo si el ID coincide -->
-      <div v-if="archivoSeleccionadoId === archivo.id" class="opciones" @click.stop>
+      <div v-if="archivoSeleccionadoId === archivo.idFILE" class="opciones" @click.stop>
         <div class="conte">
           <p @click="verArchivo"><i class="pi pi-eye" style="margin-right: 8px;"></i> Ver archivo</p>
           <p @click="descargarArchivo"><i class="pi pi-download" style="margin-right: 8px;"></i> Descargar archivo</p>

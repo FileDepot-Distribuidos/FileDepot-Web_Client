@@ -28,10 +28,18 @@ export const cargarArchivos = async () => {
     const res = await apiClient.get('/files');
     const data = Array.isArray(res.data) ? res.data : res.data.files;
 
-    archivos.value = data.map((archivo) => ({
-      ...archivo,
-      tamañoMB: (archivo.size / (1024 * 1024)).toFixed(2), // convierte a MB
-    }));
+    console.log('Archivos obtenidos:', data);
+    
+
+    archivos.value = data.map((archivo) => {
+      const sizeMB = archivo.size / (1024 * 1024);
+      return {
+        ...archivo,
+        parsedSize: sizeMB < 1
+          ? `${(archivo.size / 1024).toFixed(0)} KB` // convertir a KB si es < 1MB
+          : `${sizeMB.toFixed(2)} MB` // mostrar MB si es >= 1MB
+      };
+    });
 
     console.log('Archivos cargados:', archivos.value);
   } catch (error) {

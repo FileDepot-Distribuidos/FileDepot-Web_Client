@@ -41,7 +41,7 @@ const manejarArchivo = (event) => {
     };
 
     apiClient
-      .post("/files/recibe", fileData)
+      .post("/files", fileData)
       .then((response) => {
         console.log(response.data);
         alert("Archivo enviado correctamente al servidor");
