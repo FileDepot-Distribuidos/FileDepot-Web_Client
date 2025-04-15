@@ -37,7 +37,7 @@ span {
 }
 
 .logo img {
-  width: 100px;  
+  width: 80px;  
   height: auto;
 }
 
@@ -142,7 +142,7 @@ span {
   border-radius: 8px;
 }
 
-.modal {
+.agregar_carpeta {
   position: fixed;
   top: 0;
   left: 0;
@@ -160,6 +160,10 @@ span {
   border-radius: 10px;
   width: 300px;
   text-align: center;
+}
+
+.modal-contenido h3{
+  margin-bottom: 15px;
 }
 
 .modal-botones {

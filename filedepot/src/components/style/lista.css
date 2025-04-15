@@ -63,13 +63,86 @@
 }
 
 /* Iconos */
-#excel, #word, #pdf, #image, #folder {
+.color-default, .color-word, .color-pdf, .color-image, #folder {
   font-size: 1.5rem;
 }
+.color-default {
+  color: #000; 
+}
 
-#excel { color: green; }
-#word { color: blue; }
-#pdf, #image { color: red; }
+.color-pdf {
+  color: #d9534f;
+}
 
+.color-word {
+  color: #007bff; 
+}
 
+.color-image {
+  color: #28a745; 
+}
 
+/* estilo ventana cambiar nombre */
+.renombrar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ventana {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 20px;
+}
+
+.ventana h3{
+  margin-bottom: 15px;
+}
+
+.modal-buttons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+#cancelar{
+  background-color: #012E40;
+  color: white;
+}
+
+/* barra almacenamiento */
+
+.barra-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.barra-fondo {
+  height: 10px;
+  background-color: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 30px;
+  width: 50%;
+}
+
+.barra-progreso {
+  height: 100%;
+  background-color: #007bff;
+  transition: width 0.5s ease;
+}
+
+.detalle {
+  font-size: 0.9rem;
+  color: #555;
+}

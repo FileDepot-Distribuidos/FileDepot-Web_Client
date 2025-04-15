@@ -5,8 +5,7 @@
         <img src="@/assets/logo.png" alt="FileDepot" />
         <span>FileDepot</span>
       </div>
-      <input class="search-bar" type="text" placeholder="Buscar" />
-      <i class="pi pi-user" style="color: transparent;"></i>
+
     </nav>
     
     <div class="sidebar-container">
@@ -46,12 +45,12 @@
     </div>
 
     <!-- Modal Nueva Carpeta -->
-    <div v-if="mostrarModal" class="modal">
+    <div v-if="mostrarModal" class="agregar_carpeta">
       <div class="modal-contenido">
         <h3>Nueva carpeta</h3>
         <input type="text" v-model="nombreCarpeta" placeholder="Título" />
         <div class="modal-botones">
-          <button @click="cerrarModal">Cancelar</button>
+          <button @click="cerrarModal" id="cancelar">Cancelar</button>
           <button @click="crearCarpeta">Crear</button>
         </div>
       </div>
