@@ -10,7 +10,6 @@
             <p>Tamaño</p>
           </div>
           <Archivo_view />
-          <Carpeta_view />
         </div>
         </div>
         <div v-if="ventana_opciones" class="opciones" @click.stop>
@@ -47,13 +46,11 @@
   <script>
   import { ventana_opciones, togglePopup, cerrar_ventana } from '../js/archivos';
   import Archivo_view from './archivo_view.vue';
-  import Carpeta_view from './carpeta_view.vue';
   
   export default {
     name: "archivos_carpeta",
     components: {
       Archivo_view,
-      Carpeta_view
     },
     setup() {
       return {
