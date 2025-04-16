@@ -10,6 +10,7 @@
           <p>Tamaño</p>
         </div>
         <Archivo_view />
+        <Carpeta_view  @click="cambiarVista('archivo_carpeta')" />
       </div>
       </div>
       <div v-if="ventana_opciones" class="opciones" @click.stop>
@@ -46,17 +47,22 @@
 <script>
 import { ventana_opciones, togglePopup, cerrar_ventana } from '../js/archivos';
 import Archivo_view from './archivo_view.vue';
+import Carpeta_view from './carpeta_view.vue';
+import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
 
 export default {
   name: "ListaArchivos",
   components: {
-    Archivo_view
+    Archivo_view,
+    Carpeta_view
   },
   setup() {
     return {
       ventana_opciones,
       togglePopup,
       cerrar_ventana,
+      vistaActual,
+      cambiarVista,
     };
   },
 };

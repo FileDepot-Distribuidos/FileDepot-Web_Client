@@ -10,6 +10,8 @@ import RegisterView from '@/components/views/registro_view.vue'
 import HomePage from '@/components/views/Home_Page.vue'
 import NavBarHome from '@/components/views/navbar_home.vue';
 import archivo_view from '@/components/views/archivo_view.vue';
+import carpeta_view from '@/components/views/carpeta_view.vue';
+import archivo_carpeta from '@/components/views/Archivos_carpeta.vue';
 
 
 
@@ -75,6 +77,16 @@ const routes = [
     path: '/',
     name: 'archivo_view',
     component: archivo_view
+  },
+  {
+    path: '/',
+    name: ' carpeta_view',
+    component: carpeta_view
+  },
+  {
+    path: '/archivo_carpeta',
+    name: 'archivos_carpeta',
+    component: archivo_carpeta
   }
 ];
 

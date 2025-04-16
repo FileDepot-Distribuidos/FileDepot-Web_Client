@@ -16,13 +16,11 @@
       <p>{{ new Date(archivo.last_modified).toLocaleDateString('en-GB') || '00/00/2000' }}</p>
       <p>{{ archivo.parsedSize }}</p>
 
-      <!-- Botón de opciones -->
       <i
         class="pi pi-ellipsis-v"
         @click.stop="togglePopup('opciones', archivo.idFILE)"
       ></i>
 
-      <!-- Opciones solo si el ID coincide -->
       <div v-if="archivoSeleccionadoId === archivo.idFILE" class="opciones" @click.stop>
         <div class="conte">
           <p @click="verArchivo">
@@ -34,7 +32,7 @@
           <p @click="subirArchivo">
             <i class="pi pi-share-alt" style="margin-right: 8px;"></i> Compartir archivo
           </p>
-          <p @click="subirArchivo">
+          <p @click="abrirVentanaMover(archivo)">
             <i class="pi pi-arrows-alt" style="margin-right: 8px;"></i> Mover archivo
           </p>
           <p @click="abrirVentanaRenombrar(archivo)">
@@ -51,7 +49,6 @@
       <p style="text-align: center; margin-top: 2rem; color: gray;">Todavía no hay archivos</p>
     </div>
 
-    <!-- Modal emergente para renombrar -->
     <div v-if="ventanaRenombrar" class="renombrar">
       <div class="ventana" @click.stop>
         <h3>Cambiar nombre del archivo</h3>
@@ -59,6 +56,24 @@
         <div class="modal-buttons">
           <button @click="confirmarRenombrar">Guardar</button>
           <button @click="cerrarVentana" id="cancelar">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="archivoParaMover" class="mover">
+      <div class="ventana" @click.stop>
+        <h3>Mover archivo</h3>
+        <div class="contenedor-carpetas-scroll">
+          <div class="carpeta">
+            <i class="pi pi-folder" style="margin-right: 8px;">carpeta</i>
+            <i class="pi pi-folder" style="margin-right: 8px;">carpeta</i>
+            <i class="pi pi-folder" style="margin-right: 8px;">carpeta</i>
+            <i class="pi pi-folder" style="margin-right: 8px;">carpeta</i>
+          </div>
+        </div>
+        <div class="modal-buttons">
+          <button>Mover</button>
+          <button id="cancelar">Cancelar</button>
         </div>
       </div>
     </div>
@@ -73,10 +88,10 @@ import {
   cerrar_ventana,
   cargarArchivos,
   eliminarArchivo,
-  toggleRenamePopup,
   actualizarNombreArchivo,
   ventana_renombrar,
   archivoParaRenombrar,
+  archivoParaMover
 } from '../js/archivos.js';
 import { onMounted, computed, watch } from 'vue';
 
@@ -93,20 +108,18 @@ export default {
     };
 
     const obtenerColorIcono = (tipo) => {
-      if (!tipo) return 'color-default'; // Color por defecto
-      if (tipo.includes('pdf')) return 'color-pdf'; // Color para archivos PDF
-      if (tipo.includes('word')) return 'color-word'; // Color para archivos Word
-      if (tipo.includes('image')) return 'color-image'; // Color para archivos de imagen
-      return 'color-default'; // Color por defecto si no coincide con ningún tipo
+      if (!tipo) return 'color-default';
+      if (tipo.includes('pdf')) return 'color-pdf';
+      if (tipo.includes('word')) return 'color-word';
+      if (tipo.includes('image')) return 'color-image';
+      return 'color-default';
     };
 
     const verArchivo = () => console.log('Ver archivo');
     const descargarArchivo = () => console.log('Descargar archivo');
     const subirArchivo = () => console.log('Acción no implementada');
-
-    const abrirVentanaRenombrar = (archivo) => {
-      toggleRenamePopup(archivo);
-    };
+    const abrirVentanaRenombrar = (archivo) => togglePopup('renombrar', archivo);
+    const abrirVentanaMover = (archivo) => togglePopup('mover', archivo);
 
     const ventanaRenombrar = computed(() => ventana_renombrar.value);
     const archivoRenombrar = computed(() => archivoParaRenombrar.value);
@@ -117,9 +130,7 @@ export default {
       }
     };
 
-    const cerrarVentana = () => {
-      cerrar_ventana();
-    };
+    const cerrarVentana = () => cerrar_ventana();
 
     const eliminarArchivoDesdeVista = (id) => {
       if (confirm('¿Estás seguro de que deseas eliminar este archivo?')) {
@@ -129,31 +140,19 @@ export default {
 
     const calcularTotalTamano = () => {
       let total = 0;
-
       archivos.value.forEach((archivo) => {
-        // Asegurarse de que parsedSize esté en el formato correcto (en MB).
         let parsed = archivo.parsedSize;
-
-        // Si parsedSize está en KB, conviértelo a MB.
         if (parsed && parsed.includes('KB')) {
-          parsed = parseFloat(parsed) / 1024; // Convertir de KB a MB
+          parsed = parseFloat(parsed) / 1024;
         } else if (parsed && parsed.includes('MB')) {
-          parsed = parseFloat(parsed); // Si ya está en MB, usarlo tal cual
+          parsed = parseFloat(parsed);
         }
-
-        // Asegurarse de que el valor sea un número válido
-        if (!isNaN(parsed)) {
-          total += parsed;
-        }
+        if (!isNaN(parsed)) total += parsed;
       });
-
       emit('actualizarTotal', total);
     };
 
-    watch(archivos, () => {
-      calcularTotalTamano();
-    });
-
+    watch(archivos, () => calcularTotalTamano());
     onMounted(() => {
       cargarArchivos();
       calcularTotalTamano();
@@ -169,11 +168,13 @@ export default {
       descargarArchivo,
       subirArchivo,
       abrirVentanaRenombrar,
+      abrirVentanaMover,
       eliminarArchivoDesdeVista,
       ventanaRenombrar,
       archivoRenombrar,
       confirmarRenombrar,
       cerrarVentana,
+      archivoParaMover
     };
   },
 };
@@ -181,6 +182,4 @@ export default {
 
 <style>
 @import url('../style/lista.css');
-
-
 </style>
