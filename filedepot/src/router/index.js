@@ -11,8 +11,8 @@ import HomePage from '@/components/views/Home_Page.vue'
 import NavBarHome from '@/components/views/navbar_home.vue';
 import archivo_view from '@/components/views/archivo_view.vue';
 import carpeta_view from '@/components/views/carpeta_view.vue';
-import archivo_carpeta from '@/components/views/Archivos_carpeta.vue';
-
+import archivos_carpeta from '@/components/views/Archivos_carpeta.vue';
+  
 
 
 const routes = [
@@ -84,9 +84,10 @@ const routes = [
     component: carpeta_view
   },
   {
-    path: '/archivo_carpeta',
+    path: '/archivos_carpeta',
     name: 'archivos_carpeta',
-    component: archivo_carpeta
+    component: archivos_carpeta,
+    meta: { requiresAuth: true }
   }
 ];
 

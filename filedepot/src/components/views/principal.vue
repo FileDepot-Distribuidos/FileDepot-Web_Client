@@ -41,6 +41,7 @@
         <ListaArchivos v-if="vistaActual === 'principal'" />
         <ArchivosCompartidos v-if="vistaActual === 'compartidos'" />
         <AlmacenamientoArchivos v-if="vistaActual === 'almacenamiento'" />
+        <Archivos_carpeta v-if="vistaActual === 'archivos_carpeta'" />
       </div>
     </div>
 
@@ -65,6 +66,7 @@ import { fileInput, subirArchivo, manejarArchivo } from '@/components/js/subir_a
 import ListaArchivos from '@/components/views/Lista_Archivos.vue';
 import ArchivosCompartidos from '@/components/views/Archivos_Compartidos.vue';
 import AlmacenamientoArchivos from '@/components/views/Almacenamiento_Archivos.vue';
+import Archivos_carpeta from '@/components/views/Archivos_carpeta.vue';
 import { mostrarModal, nombreCarpeta, mostrarNuevaCarpeta, cerrarModal, crearCarpeta } from '@/components/js/crear_carpeta';
 // import { sign } from 'core-js/core/number';
 import { useAuthStore } from '@/stores/authStore';
@@ -76,6 +78,7 @@ export default {
     ListaArchivos,
     ArchivosCompartidos,
     AlmacenamientoArchivos,
+    Archivos_carpeta
   },
   setup() {
     return {

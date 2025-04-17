@@ -25,7 +25,7 @@ apiClient.interceptors.response.use(
       const authStore = useAuthStore();
       const toast = useToast();
       
-      toast.warning('Cacudo el acceso. Por favor, vuelve a iniciar sesión.');
+      toast.warning('Caducó el acceso. Por favor, vuelve a iniciar sesión.');
 
       setTimeout(() => {
         authStore.logout();

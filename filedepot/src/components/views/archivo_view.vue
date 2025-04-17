@@ -100,13 +100,24 @@ import { onMounted, computed, watch } from 'vue';
 
 export default {
   name: 'archivo_view',
+  props: {
+    idDirectorio: {
+      type: Number,
+      default: null,
+    },
+  },
   emits: ['actualizarTotal'],
   setup(props, { emit }) {
+
+    console.log(props.idDirectorio);
+
     const obtenerIcono = (tipo) => {
       if (!tipo) return 'pi pi-file';
       if (tipo.includes('pdf')) return 'pi pi-file-pdf';
       if (tipo.includes('word')) return 'pi pi-file-word';
       if (tipo.includes('image')) return 'pi pi-image';
+      if (tipo.includes('presentation')) return 'pi pi-file-check';
+      if (tipo.includes('spreadsheet')) return 'pi pi-file-excel';
       return 'pi pi-file';
     };
 
@@ -115,6 +126,8 @@ export default {
       if (tipo.includes('pdf')) return 'color-pdf';
       if (tipo.includes('word')) return 'color-word';
       if (tipo.includes('image')) return 'color-image';
+      if (tipo.includes('presentationml')) return 'color-pptx';
+      if (tipo.includes('spreadsheet')) return 'color-excel';
       return 'color-default';
     };
 
@@ -161,7 +174,7 @@ export default {
 
     watch(archivos, () => calcularTotalTamano());
     onMounted(() => {
-      cargarArchivos();
+      cargarArchivos(props.idDirectorio);
       calcularTotalTamano();
     });
 

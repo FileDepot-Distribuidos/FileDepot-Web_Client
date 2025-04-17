@@ -1,7 +1,11 @@
 import { ref } from "vue";
 import apiClient from "@/api/api";
+import { useToast } from 'vue-toastification';
+import { cargarArchivos } from "@/components/js/archivos";
+import { directorioActualId } from "@/components/js/directorio_actual";
 
 const fileInput = ref(null);
+const toast = useToast();
 
 const subirArchivo = () => {
   if (fileInput.value) {
@@ -24,7 +28,10 @@ const manejarArchivo = (event) => {
   ];
 
   if (!tiposPermitidos.includes(archivoSeleccionado.type)) {
-    alert("Tipo de archivo no permitido. Solo se permiten Word, Excel, PowerPoint, PDF y PNG.");
+    toast.warning('Tipo de archivo no permitido. Solo se permiten Word, Excel, PowerPoint, PDF y PNG.', { timeout: 3500 });
+    setTimeout(() => {
+      window.location.reload();
+    }, 3500);
     return;
   }
 
@@ -44,11 +51,17 @@ const manejarArchivo = (event) => {
       .post("/files", fileData)
       .then((response) => {
         console.log(response.data);
-        alert("Archivo enviado correctamente al servidor");
+        toast.success('Archivo subido correctamente', { timeout: 2000 });
+        setTimeout(() => {
+          cargarArchivos(directorioActualId.value);
+        }, 2000);
       })
       .catch((error) => {
         console.error("Error al enviar el archivo:", error);
-        alert("Error al enviar el archivo al servidor");
+        toast.error('Error al subir el archivo', { timeout: 2000 });
+        setTimeout(() => {
+          cargarArchivos(directorioActualId.value);
+        }, 2000);
       });
   };
 

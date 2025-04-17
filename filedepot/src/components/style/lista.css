@@ -63,7 +63,7 @@
 }
 
 /* Iconos */
-.color-default, .color-word, .color-pdf, .color-image, #folder {
+.color-default, .color-word, .color-pdf, .color-image, .color-pptx, .color-excel, #folder {
   font-size: 1.5rem;
 }
 .color-default {
@@ -79,6 +79,14 @@
 }
 
 .color-image {
+  color: #a72876; 
+}
+
+.color-pptx {
+  color: #f0ad4e; 
+}
+
+.color-excel {
   color: #28a745; 
 }
 
