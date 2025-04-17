@@ -66,6 +66,8 @@ export const eliminarArchivo = async (idFILE) => {
   }
 };
 
+
+
 export const actualizarNombreArchivo = async (idFILE, newName) => {
   try {
     await apiClient.put('/rename', {
@@ -76,5 +78,37 @@ export const actualizarNombreArchivo = async (idFILE, newName) => {
     cerrar_ventana();
   } catch (error) {
     console.error('Error al renombrar archivo:', error);
+  }
+};
+
+//Download
+export const descargarArchivo = async (idFILE) => {
+  try {
+    const response = await apiClient.get(`/archivo/${idFILE}`, {
+      responseType: 'blob'
+    });
+
+    // Intentamos extraer el nombre del archivo desde los headers
+    const disposition = response.headers['content-disposition'];
+    let fileName = 'archivo_descargado';
+
+    if (disposition && disposition.includes('filename=')) {
+      fileName = disposition
+        .split('filename=')[1]
+        .replace(/"/g, '')
+        .trim();
+    }
+
+    // Crear un blob y un enlace para forzar la descarga
+    const blob = new Blob([response.data]);
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
+
+    // Limpiar
+    window.URL.revokeObjectURL(link.href);
+  } catch (error) {
+    console.error('Error al descargar archivo:', error);
   }
 };
