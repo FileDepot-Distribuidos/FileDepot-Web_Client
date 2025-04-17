@@ -86,7 +86,8 @@ const routes = [
   {
     path: '/archivos_carpeta',
     name: 'archivos_carpeta',
-    component: archivos_carpeta
+    component: archivos_carpeta,
+    meta: { requiresAuth: true }
   }
 ];
 

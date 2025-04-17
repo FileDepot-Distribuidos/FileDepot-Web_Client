@@ -9,7 +9,7 @@
             <p>Última modificación</p>
             <p>Tamaño</p>
           </div>
-          <Archivo_view />
+          <Archivo_view :idDirectorio="directorioActualId" />
         </div>
         </div>
         <div v-if="ventana_opciones" class="opciones" @click.stop>

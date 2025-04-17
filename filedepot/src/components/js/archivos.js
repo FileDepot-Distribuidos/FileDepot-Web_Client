@@ -35,9 +35,9 @@ export const cerrar_ventana = () => {
   archivoParaMover.value = false;
 };
 
-export const cargarArchivos = async () => {
+export const cargarArchivos = async (idDirectorio) => {
   try {
-    const res = await apiClient.get('/files');
+    const res = await apiClient.get(`/files/dir/${idDirectorio}`);
     const data = Array.isArray(res.data) ? res.data : res.data.files;
 
     archivos.value = data.map((archivo) => {
