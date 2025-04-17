@@ -2,6 +2,7 @@ import { ref } from "vue";
 import apiClient from "@/api/api";
 import { useToast } from 'vue-toastification';
 import { cargarArchivos } from "@/components/js/archivos";
+import { directorioActualId } from "@/components/js/directorio_actual";
 
 const fileInput = ref(null);
 const toast = useToast();
@@ -52,14 +53,14 @@ const manejarArchivo = (event) => {
         console.log(response.data);
         toast.success('Archivo subido correctamente', { timeout: 2000 });
         setTimeout(() => {
-          cargarArchivos();
+          cargarArchivos(directorioActualId.value);
         }, 2000);
       })
       .catch((error) => {
         console.error("Error al enviar el archivo:", error);
         toast.error('Error al subir el archivo', { timeout: 2000 });
         setTimeout(() => {
-          cargarArchivos();
+          cargarArchivos(directorioActualId.value);
         }, 2000);
       });
   };
