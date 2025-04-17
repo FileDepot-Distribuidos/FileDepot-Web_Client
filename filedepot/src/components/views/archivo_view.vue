@@ -61,22 +61,42 @@
     </div>
 
     <div v-if="archivoParaMover" class="mover">
-      <div class="ventana" @click.stop>
-        <h3>Mover archivo</h3>
-        <div class="contenedor-carpetas-scroll">
-          <div class="carpeta">
-            <i class="pi pi-folder" style="margin-right: 8px;">carpeta</i>
-            <i class="pi pi-folder" style="margin-right: 8px;">carpeta</i>
-            <i class="pi pi-folder" style="margin-right: 8px;">carpeta</i>
-            <i class="pi pi-folder" style="margin-right: 8px;">carpeta</i>
-          </div>
-        </div>
-        <div class="modal-buttons">
-          <button>Mover</button>
-          <button id="cancelar">Cancelar</button>
+    <div class="ventana" @click.stop>
+      <h3>Mover archivo</h3>
+      <div class="contenedor-carpetas-scroll">
+        <div class="carpeta">
+          <p>
+            <i class="pi pi-folder" style="margin-right: 8px;"></i>carpeta
+          </p>
+          <p>
+            <i class="pi pi-folder" style="margin-right: 8px;"></i>carpeta
+          </p>
+          <p>
+            <i class="pi pi-folder" style="margin-right: 8px;"></i>carpeta
+          </p>
+          <p>
+            <i class="pi pi-folder" style="margin-right: 8px;"></i>carpeta
+          </p>
+          <p>
+            <i class="pi pi-folder" style="margin-right: 8px;"></i>carpeta extra
+          </p>
+          <p>
+            <i class="pi pi-folder" style="margin-right: 8px;"></i>carpeta extra
+          </p>
+          <p>
+            <i class="pi pi-folder" style="margin-right: 8px;"></i>carpeta extra
+          </p>
+          <p>
+            <i class="pi pi-folder" style="margin-right: 8px;"></i>carpeta extra
+          </p>
         </div>
       </div>
+      <div class="modal-buttons">
+        <button>Mover</button>
+        <button id="cancelar">Cancelar</button>
+      </div>
     </div>
+  </div>
   </div>
 </template>
 

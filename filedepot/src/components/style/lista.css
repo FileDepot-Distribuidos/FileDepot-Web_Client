@@ -164,17 +164,39 @@
 
 .carpeta {
   display: flex;
-  align-items: center;
+  flex-direction: column;  
+  align-items: self-start;
   padding: 0.5rem;
   border-bottom: 1px solid #eee;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
-.carpeta:hover {
+.carpeta p{
+  width: 100%;
+}
+
+.carpeta p:hover {
   background-color: #f2f2f2;
 }
 
+.contenedor-carpetas-scroll .carpeta {
+  max-height: 150px; /* Ajusta según cuántos elementos deseas mostrar sin scroll */
+  overflow-y: auto;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+/* Scroll bonito (opcional) */
+.contenedor-carpetas-scroll .carpeta::-webkit-scrollbar {
+  width: 6px;
+}
+
+.contenedor-carpetas-scroll .carpeta::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
 
 /* barra almacenamiento */
 
