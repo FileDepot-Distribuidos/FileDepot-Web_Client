@@ -26,7 +26,7 @@
           <p @click="verArchivo">
             <i class="pi pi-eye" style="margin-right: 8px;"></i> Ver archivo
           </p>
-          <p @click="descargarArchivo">
+          <p @click="descargarArchivo(archivo.idFILE)">
             <i class="pi pi-download" style="margin-right: 8px;"></i> Descargar archivo
           </p>
           <p @click="subirArchivo">
@@ -101,6 +101,8 @@
 </template>
 
 <script>
+/* eslint-disable no-unused-vars */
+
 import {
   archivos,
   archivoSeleccionadoId,
@@ -111,7 +113,8 @@ import {
   actualizarNombreArchivo,
   ventana_renombrar,
   archivoParaRenombrar,
-  archivoParaMover
+  archivoParaMover,
+  descargarArchivo as descargarArchivoDesdeJS
 } from '../js/archivos.js';
 import { onMounted, computed, watch } from 'vue';
 
@@ -149,7 +152,11 @@ export default {
     };
 
     const verArchivo = () => console.log('Ver archivo');
-    const descargarArchivo = () => console.log('Descargar archivo');
+
+    const descargarArchivo = (idFILE) => {
+  return descargarArchivoDesdeJS(idFILE);
+};
+
     const subirArchivo = () => console.log('Acción no implementada');
     const abrirVentanaRenombrar = (archivo) => togglePopup('renombrar', archivo);
     const abrirVentanaMover = (archivo) => togglePopup('mover', archivo);
