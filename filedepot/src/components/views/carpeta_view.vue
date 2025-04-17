@@ -40,7 +40,7 @@
         <input type="text" v-model="carpetaRenombrar.name" />
         <div class="modal-buttons">
           <button @click="confirmarRenombrar">Guardar</button>
-          <button @click="cerrarVentana" id="cancelar">Cancelar</button>
+          <button @click.stop id="cancelar">Cancelar</button>
         </div>
       </div>
     </div>
