@@ -1,6 +1,6 @@
 <template>
     <div class="contai">
-      <h1>Te damos la bienvenida a tu FileDepot</h1>
+      <h1>Unidad > </h1>
       <div class="content">
         <div class="file-table">
           <div class="header row">
@@ -10,6 +10,7 @@
             <p>Tamaño</p>
           </div>
           <Archivo_view :idDirectorio="directorioActualId" />
+          <Carpeta_view :idDirectorio="directorioActualId" />
         </div>
         </div>
         <div v-if="ventana_opciones" class="opciones" @click.stop>
@@ -44,22 +45,27 @@
   </template>
   
   <script>
-  import { ventana_opciones, togglePopup, cerrar_ventana } from '../js/archivos';
-  import Archivo_view from './archivo_view.vue';
-  
-  export default {
-    name: "archivos_carpeta",
-    components: {
-      Archivo_view,
-    },
-    setup() {
-      return {
-        ventana_opciones,
-        togglePopup,
-        cerrar_ventana,
-      };
-    },
-  };
+ import { ventana_opciones, togglePopup, cerrar_ventana } from '../js/archivos';
+import Archivo_view from './archivo_view.vue';
+import Carpeta_view from './carpeta_view.vue';
+import { directorioActualId } from '@/components/js/principalViewLogic';
+
+export default {
+  name: "archivos_carpeta",
+  components: {
+    Archivo_view,
+    Carpeta_view
+  },
+  setup() {
+    return {
+      ventana_opciones,
+      togglePopup,
+      cerrar_ventana,
+      directorioActualId, // <-- importar el ID actual
+    };
+  },
+};
+
   </script>
   
   <style>

@@ -1,17 +1,17 @@
 <template>
   <div>
     <div
-      class="carpeta row"
+      class="archivo row"
       v-for="carpeta in carpetas"
       :key="carpeta.idDIRECTORY"
     >
-      <p @click="abrirCarpeta(carpeta.idDIRECTORY)">
+      <p  @click="cambiarVista('archivos_carpeta',carpeta.idDIRECTORY)">
         <i class="pi pi-folder" style="margin-right: 8px;"></i>
         {{ carpeta.path.split('/').pop() }}
       </p>
       <p>{{ new Date(carpeta.creation_date).toLocaleDateString('en-GB') || '00/00/2000' }}</p>
-      <p>—</p>
-      <p>—</p>
+      <p>15/04/2025</p>
+      <p>20mb</p>
 
       <i
         class="pi pi-ellipsis-v"
@@ -57,8 +57,11 @@ import {
   togglePopupCarpeta,
   cerrar_ventana_carpetas,
   ventana_renombrar_carpeta,
-  carpetaParaRenombrar
+  carpetaParaRenombrar,
+  
 } from '../js/carpetas.js';
+import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
+
 import { onMounted, computed } from 'vue';
 
 export default {
@@ -98,6 +101,8 @@ export default {
     });
 
     return {
+      vistaActual,
+      cambiarVista,
       carpetas,
       carpetaSeleccionadaId,
       abrirCarpeta,
