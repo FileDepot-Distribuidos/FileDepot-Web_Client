@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Lista de archivos -->
     <div
       class="archivo row"
       v-for="archivo in archivos"
@@ -16,11 +17,13 @@
       <p>{{ new Date(archivo.last_modified).toLocaleDateString('en-GB') || '00/00/2000' }}</p>
       <p>{{ archivo.parsedSize }}</p>
 
+      <!-- Opciones -->
       <i
         class="pi pi-ellipsis-v"
         @click.stop="togglePopup('opciones', archivo.idFILE)"
       ></i>
 
+      <!-- Menú de opciones -->
       <div v-if="archivoSeleccionadoId === archivo.idFILE" class="opciones" @click.stop>
         <div class="conte">
           <p @click="verArchivo">
@@ -45,11 +48,14 @@
       </div>
     </div>
 
+    <!-- Mensaje vacío -->
     <div v-if="archivos.length === 0" class="mensaje-vacio">
-      <p style="text-align: center; margin-top: 2rem; color: gray;">Todavía no hay archivos</p>
+      <p style="text-align: center; margin-top: 2rem; color: gray;">
+        Todavía no hay archivos
+      </p>
     </div>
 
-    <!-- Modal para renombrar -->
+    <!-- Modal: Renombrar -->
     <div v-if="ventanaRenombrar" class="renombrar">
       <div class="ventana" @click.stop>
         <h3>Cambiar nombre del archivo</h3>
@@ -61,7 +67,7 @@
       </div>
     </div>
 
-    <!-- Modal para compartir -->
+    <!-- Modal: Compartir -->
     <div v-if="ventanaCompartir" class="renombrar">
       <div class="ventana" @click.stop>
         <h3>Compartir archivo</h3>
@@ -78,26 +84,37 @@
     </div>
 
 
-    <!-- Modal para mover archivo -->
+
+    <!-- Modal: Mover archivo -->
     <div v-if="archivoParaMover" class="mover">
       <div class="ventana" @click.stop>
         <h3>Mover archivo</h3>
+        <!-- Scrollable list de carpetas -->
         <div class="contenedor-carpetas-scroll">
-          <div class="carpeta"  v-for="carpeta in carpetas"
-          :key="carpeta.idDIRECTORY">
-            <p >
-              <i class="pi pi-folder" style="margin-right: 8px;"></i>
-              {{ carpeta.path.split('/').pop() }}
-            </p>
-            </div>
+          <div
+            class="carpeta"
+            v-for="carpeta in carpetas"
+            :key="carpeta.idDIRECTORY"
+            @click="selectedMoveFolder = carpeta"
+            :class="{ selected: selectedMoveFolder && selectedMoveFolder.idDIRECTORY === carpeta.idDIRECTORY }"
+          >
+            <i class="pi pi-folder" style="margin-right: 8px;"></i>
+            {{ carpeta.path.split('/').pop() }}
+          </div>
         </div>
+        <!-- Botones -->
         <div class="modal-buttons">
-          <button>Mover</button>
+          <button 
+            :disabled="!selectedMoveFolder" 
+            @click="moverArchivo(archivoParaMover.idFILE, selectedMoveFolder.idDIRECTORY)"
+          >
+            Mover
+          </button>
           <button @click="cerrarVentana" id="cancelar">Cancelar</button>
-        </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -116,6 +133,7 @@ import {
   archivoParaCompartir,
   compartirArchivo,
   descargarArchivo as descargarArchivoDesdeJS,
+  moverArchivo           // <-- importamos la nueva función de movimiento
 } from '../js/archivos.js';
 import { directorioActualId } from '../js/directorio_actual';
 // import Carpeta_view from './carpeta_view.vue';
@@ -127,14 +145,8 @@ import { ref, onMounted, computed, watch } from 'vue';
 
 export default {
   name: 'archivo_view',
-  components : {
-    // Carpeta_view
-  },
   props: {
-    idDirectorio: {
-      type: Number,
-      default: null,
-    },
+    idDirectorio: { type: Number, default: null }
   },
   emits: ['actualizarTotal'],
   setup(props, { emit }) {
@@ -164,31 +176,24 @@ export default {
       if (tipo.includes('pdf')) return 'pi pi-file-pdf';
       if (tipo.includes('word')) return 'pi pi-file-word';
       if (tipo.includes('image')) return 'pi pi-image';
-      if (tipo.includes('presentation')) return 'pi pi-file-check';
-      if (tipo.includes('spreadsheet')) return 'pi pi-file-excel';
       return 'pi pi-file';
     };
-
-    const obtenerColorIcono = (tipo) => {
+    const obtenerColorIcono = tipo => {
       if (!tipo) return 'color-default';
       if (tipo.includes('pdf')) return 'color-pdf';
       if (tipo.includes('word')) return 'color-word';
       if (tipo.includes('image')) return 'color-image';
-      if (tipo.includes('presentationml')) return 'color-pptx';
-      if (tipo.includes('spreadsheet')) return 'color-excel';
       return 'color-default';
     };
 
     const verArchivo = () => console.log('Ver archivo');
-
-    const descargarArchivo = (idFILE) => {
-      return descargarArchivoDesdeJS(idFILE);
+    const descargarArchivo = idFILE => descargarArchivoDesdeJS(idFILE);
+    const abrirVentanaRenombrar = archivo => togglePopup('renombrar', archivo);
+    const abrirVentanaCompartir = archivo => togglePopup('compartir', archivo);
+    const abrirVentanaMover = archivo => {
+      togglePopup('mover', archivo);
+      selectedMoveFolder.value = null;
     };
-
-    const subirArchivo = () => console.log('Acción no implementada');
-    const abrirVentanaRenombrar = (archivo) => togglePopup('renombrar', archivo);
-    const abrirVentanaMover = (archivo) => togglePopup('mover', archivo);
-    const abrirVentanaCompartir = (archivo) => togglePopup('compartir', archivo);
 
     const ventanaRenombrar = computed(() => ventana_renombrar.value);
     const ventanaCompartir = computed(() => ventana_compartir.value);
@@ -201,8 +206,7 @@ export default {
     };
 
     const cerrarVentana = () => cerrar_ventana();
-
-    const eliminarArchivoDesdeVista = (id) => {
+    const eliminarArchivoDesdeVista = id => {
       if (confirm('¿Estás seguro de que deseas eliminar este archivo?')) {
         eliminarArchivo(id);
       }
@@ -210,26 +214,23 @@ export default {
 
     const calcularTotalTamano = () => {
       let total = 0;
-      archivos.value.forEach((archivo) => {
-        let parsed = archivo.parsedSize;
-        if (parsed && parsed.includes('KB')) {
-          parsed = parseFloat(parsed) / 1024;
-        } else if (parsed && parsed.includes('MB')) {
-          parsed = parseFloat(parsed);
-        }
-        if (!isNaN(parsed)) total += parsed;
+      archivos.value.forEach(a => {
+        let p = a.parsedSize;
+        if (p.includes('KB')) p = parseFloat(p)/1024;
+        else p = parseFloat(p);
+        if (!isNaN(p)) total += p;
       });
       emit('actualizarTotal', total);
     };
 
-    watch(archivos, () => calcularTotalTamano());
+    // Efectos
+    watch(archivos, calcularTotalTamano);
     onMounted(() => {
       cargarArchivos(props.idDirectorio);
+      cargarCarpetas(props.idDirectorio);
       calcularTotalTamano();
     });
-    onMounted(() => {
-      cargarCarpetas(props.idDirectorio);
-    });
+
     return {
       archivos,
       archivoSeleccionadoId,
@@ -238,10 +239,9 @@ export default {
       obtenerColorIcono,
       verArchivo,
       descargarArchivo,
-      subirArchivo,
       abrirVentanaRenombrar,
-      abrirVentanaMover,
       abrirVentanaCompartir,
+      abrirVentanaMover,
       eliminarArchivoDesdeVista,
       ventanaRenombrar,
       ventanaCompartir,
@@ -255,10 +255,25 @@ export default {
       emailCompartir,
       carpetas
     };
-  },
+  }
 };
 </script>
 
 <style>
 @import url('../style/lista.css');
+
+/* Destacar carpeta seleccionada */
+.carpeta.selected {
+  background-color: rgba(0,123,255,0.1);
+}
+
+/* Scroll en listado de carpetas */
+.contenedor-carpetas-scroll {
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 1rem 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.5rem;
+}
 </style>
