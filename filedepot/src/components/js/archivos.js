@@ -189,8 +189,55 @@ export const descargarArchivo = async (idFILE) => {
   }
 };
 
-//mover archivo
+//leer
 
+export const leerArchivo = async (fileID) => {
+ //se abre una ventana antes de realizar el proceso
+  const previewWindow = window.open('', '_blank');
+  if (!previewWindow) {
+    return descargarArchivo(fileID);
+  }
+
+  try {
+   
+    const response = await apiClient.get(`/files/download/${fileID}`);
+    const { success, data: base64Data, fileType, filename } = response.data;
+    if (!success || !base64Data) throw new Error('No hay datos de archivo');
+
+    
+    previewWindow.document.title = filename;
+
+   
+    const byteChars   = atob(base64Data);
+    const byteNumbers = Array.from(byteChars, c => c.charCodeAt(0));
+    const blob        = new Blob([new Uint8Array(byteNumbers)], { type: fileType });
+    const url         = URL.createObjectURL(blob);
+
+   
+    if (fileType.startsWith('image/')) {
+      previewWindow.document.body.innerHTML = `
+        <h1 style="font-family:sans-serif;">${filename}</h1>
+        <img src="${url}" style="max-width:100%; height:auto;" />
+      `;
+    } else if (fileType === 'application/pdf') {
+      previewWindow.document.body.innerHTML = `
+        <h1 style="font-family:sans-serif;">${filename}</h1>
+        <embed src="${url}" type="application/pdf" width="100%" height="100%"/>
+      `;
+    } else {
+     
+      previewWindow.location.href = url;
+    }
+
+  } catch (err) {
+    console.error('No se pudo leer en línea:', err);
+    previewWindow.close();
+    descargarArchivo(fileID);
+  }
+};
+
+
+//mover archivo
 export const moverArchivo = async (carpeta) => {
   if (!archivoParaMover.value || !carpeta.idDIRECTORY) return;
 

@@ -26,9 +26,10 @@
       <!-- Menú de opciones -->
       <div v-if="archivoSeleccionadoId === archivo.idFILE" class="opciones" @click.stop>
         <div class="conte">
-          <p @click="verArchivo">
+          <p @click="leerArchivo(archivo.idFILE)">
             <i class="pi pi-eye" style="margin-right: 8px;"></i> Ver archivo
           </p>
+        
           <p @click="descargarArchivo(archivo.idFILE)">
             <i class="pi pi-download" style="margin-right: 8px;"></i> Descargar archivo
           </p>
@@ -133,7 +134,9 @@ import {
   archivoParaCompartir,
   compartirArchivo,
   descargarArchivo as descargarArchivoDesdeJS,
-  moverArchivo           // <-- importamos la nueva función de movimiento
+  moverArchivo,
+  leerArchivo as leerArchivoDesdeJS,
+
 } from '../js/archivos.js';
 import { directorioActualId } from '../js/directorio_actual';
 // import Carpeta_view from './carpeta_view.vue';
@@ -177,18 +180,24 @@ export default {
       if (tipo.includes('pdf')) return 'pi pi-file-pdf';
       if (tipo.includes('word')) return 'pi pi-file-word';
       if (tipo.includes('image')) return 'pi pi-image';
+      if (tipo.includes('presentation')) return 'pi pi-file-check';
+      if (tipo.includes('spreadsheet')) return 'pi pi-file-excel';
       return 'pi pi-file';
     };
-    const obtenerColorIcono = tipo => {
+    const obtenerColorIcono = (tipo) => {
       if (!tipo) return 'color-default';
       if (tipo.includes('pdf')) return 'color-pdf';
       if (tipo.includes('word')) return 'color-word';
       if (tipo.includes('image')) return 'color-image';
+      if (tipo.includes('presentationml')) return 'color-pptx';
+      if (tipo.includes('spreadsheet')) return 'color-excel';
       return 'color-default';
     };
 
     const verArchivo = () => console.log('Ver archivo');
     const descargarArchivo = idFILE => descargarArchivoDesdeJS(idFILE);
+    const leerArchivo = idFILE => leerArchivoDesdeJS(idFILE);
+
     const abrirVentanaRenombrar = archivo => togglePopup('renombrar', archivo);
     const abrirVentanaCompartir = archivo => togglePopup('compartir', archivo);
     const abrirVentanaMover = archivo => {
@@ -257,6 +266,7 @@ export default {
       carpetas,
       selectedMoveFolder,
       moverArchivo,
+      leerArchivo
     };
   }
 };
