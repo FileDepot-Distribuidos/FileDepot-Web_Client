@@ -29,6 +29,9 @@
           <p @click="eliminarCarpetaDesdeVista(carpeta.idFOLDER)">
             <i class="pi pi-trash" style="margin-right: 8px;"></i> Eliminar carpeta
           </p>
+          <p @click="abrirVentanaCompartir(carpeta)">
+            <i class="pi pi-share-alt" style="margin-right: 8px;"></i> Compartir carpeta
+          </p>
         </div>
       </div>
     </div>
@@ -37,6 +40,7 @@
       <p style="text-align: center; margin-top: 2rem; color: gray;">Todavía no hay carpetas</p>
     </div>
 
+    <!-- Modal para renombrar -->
     <div v-if="ventanaRenombrar" class="renombrar">
       <div class="ventana" @click.stop>
         <h3>Cambiar nombre de la carpeta</h3>
@@ -47,6 +51,24 @@
         </div>
       </div>
     </div>
+
+
+        <!-- Modal para compartir -->
+        <div v-if="ventanaCompartir" class="renombrar">
+          <div class="ventana" @click.stop>
+            <h3>Compartir carpeta</h3>
+            <input
+              type="email"
+              v-model="emailCompartir"
+              placeholder="Escribe el correo del usuario"
+            />
+            <div class="modal-buttons">
+              <button @click="handleCompartir">Compartir</button>
+              <button @click="cerrarVentana" id="cancelar">Cancelar</button>
+            </div>
+          </div>
+        </div>
+
   </div>
 </template>
 
@@ -60,14 +82,18 @@ import {
   togglePopupCarpeta,
   cerrar_ventana_carpetas,
   ventana_renombrar_carpeta,
-  carpetaParaRenombrar
+  carpetaParaRenombrar,
+  ventana_compartir_carpeta,
+  carpetaParaCompartir,
+  compartirCarpeta
 } from '../js/carpetas.js';
+
 import {
   togglePopup,
 } from '../js/archivos.js'
 import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
 
-import { onMounted, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
 export default {
   name: 'carpeta_view',
@@ -78,6 +104,27 @@ export default {
     },
   },
   setup(props) {
+
+    const emailCompartir = ref('');
+
+    const handleCompartir = async () => {
+      if (!emailCompartir.value) {
+        alert('Por favor ingresa un correo electrónico válido.');
+        return;
+      }
+
+      const carpeta = carpetaParaCompartir.value;
+      if (carpeta && carpeta.idDIRECTORY) {
+        await compartirCarpeta(carpeta.idDIRECTORY, emailCompartir.value);
+        emailCompartir.value = '';
+        cerrarVentana(); // <- esto cierra el modal
+
+      } else {
+        console.error('No se ha seleccionado carpeta para compartir.');
+      }
+    };
+
+
     const abrirCarpeta = (id) => {
       // Aquí puedes emitir o cambiar el directorio actual para que se actualicen archivos y carpetas
       console.log("Abrir carpeta", id);
@@ -89,12 +136,15 @@ export default {
         await eliminarCarpeta(id);
       }
     };
+    const abrirVentanaCompartir = (carpeta) => togglePopupCarpeta('compartir', carpeta);
 
     const confirmarRenombrar = () => {
       if (carpetaRenombrar.value) {
         actualizarNombreCarpeta(carpetaRenombrar.value.idFOLDER, carpetaRenombrar.value.name);
       }
     };
+
+  const ventanaCompartir = computed(() => ventana_compartir_carpeta.value);
 
     const cerrarVentana = () => cerrar_ventana_carpetas();
 
@@ -112,13 +162,17 @@ export default {
       carpetaSeleccionadaId,
       abrirCarpeta,
       abrirVentanaRenombrar,
+      abrirVentanaCompartir,
       eliminarCarpetaDesdeVista,
       confirmarRenombrar,
       cerrarVentana,
       ventanaRenombrar,
       carpetaRenombrar,
       togglePopup,
-      togglePopupCarpeta
+      togglePopupCarpeta,
+      ventanaCompartir,
+      handleCompartir,
+      emailCompartir,
     };
   }
 };

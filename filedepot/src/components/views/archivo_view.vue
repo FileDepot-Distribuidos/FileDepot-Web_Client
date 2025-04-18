@@ -10,7 +10,7 @@
           :class="['pi', obtenerIcono(archivo.type), obtenerColorIcono(archivo.type)]" 
           style="margin-right: 8px;">
         </i>
-        {{ archivo.name }}
+        {{ archivo.name.length > 37 ? archivo.name.substring(0, 35) + '...' : archivo.name }}
       </p>
       <p>{{ new Date(archivo.creation_date).toLocaleDateString('en-GB') || '00/00/2000' }}</p>
       <p>{{ new Date(archivo.last_modified).toLocaleDateString('en-GB') || '00/00/2000' }}</p>
@@ -65,13 +65,18 @@
     <div v-if="ventanaCompartir" class="renombrar">
       <div class="ventana" @click.stop>
         <h3>Compartir archivo</h3>
-        <input type="text" placeholder="Escribe el correo del usuario ">
+        <input
+          type="email"
+          v-model="emailCompartir"
+          placeholder="Escribe el correo del usuario"
+        />
         <div class="modal-buttons">
-          <button>Compartir</button>
+          <button @click="handleCompartir">Compartir</button>
           <button @click="cerrarVentana" id="cancelar">Cancelar</button>
         </div>
       </div>
     </div>
+
 
     <!-- Modal para mover archivo -->
     <div v-if="archivoParaMover" class="mover">
@@ -109,6 +114,7 @@ import {
   archivoParaRenombrar,
   archivoParaMover,
   archivoParaCompartir,
+  compartirArchivo,
   descargarArchivo as descargarArchivoDesdeJS,
 } from '../js/archivos.js';
 import { directorioActualId } from '../js/directorio_actual';
@@ -117,7 +123,7 @@ import {
   carpetas,
   cargarCarpetas,
 } from '../js/carpetas.js';
-import { onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 
 export default {
   name: 'archivo_view',
@@ -132,6 +138,27 @@ export default {
   },
   emits: ['actualizarTotal'],
   setup(props, { emit }) {
+
+    const emailCompartir = ref('');
+
+    const handleCompartir = async () => {
+      if (!emailCompartir.value) {
+        alert('Por favor ingresa un correo electrónico válido.');
+        return;
+      }
+
+      const archivo = archivoParaCompartir.value;
+      if (archivo && archivo.idFILE) {
+        await compartirArchivo(archivo.idFILE, emailCompartir.value);
+        emailCompartir.value = '';
+        cerrarVentana(); // <- esto cierra el modal
+
+      } else {
+        console.error('No se ha seleccionado archivo para compartir.');
+      }
+    };
+    
+
     const obtenerIcono = (tipo) => {
       if (!tipo) return 'pi pi-file';
       if (tipo.includes('pdf')) return 'pi pi-file-pdf';
@@ -224,6 +251,8 @@ export default {
       archivoParaMover,
       archivoParaCompartir,
       directorioActualId,
+      handleCompartir,
+      emailCompartir,
       carpetas
     };
   },

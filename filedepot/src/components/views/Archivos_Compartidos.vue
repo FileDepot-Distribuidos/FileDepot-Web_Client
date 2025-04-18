@@ -9,7 +9,7 @@
           <p>Última modificación</p>
           <p>Tamaño</p>
         </div>
-        <Archivo_view />
+        <Compartidos_view />
       </div>
       </div>
       <div v-if="ventana_opciones" class="opciones" @click.stop>
@@ -45,12 +45,12 @@
 
 <script>
 import { ventana_opciones, togglePopup, cerrar_ventana } from '../js/archivos';
-import Archivo_view from './archivo_view.vue';
+import Compartidos_view from './compartidos_view.vue';
 
 export default {
   name: "ArchivosCompartidos",
   components: {
-    Archivo_view
+    Compartidos_view
   },
   setup() {
     return {
@@ -61,6 +61,7 @@ export default {
   },
 };
 </script>
+
 
 <style>
 @import url('../style/lista.css');

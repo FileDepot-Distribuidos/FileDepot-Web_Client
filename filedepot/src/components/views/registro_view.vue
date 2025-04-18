@@ -29,10 +29,12 @@
 import NavBar from '@/components/views/navbar_view.vue';
 import apiClient from '@/api/api'; // Asegúrate de importar el servicio API
 import { ref } from 'vue';
+import { useToast } from 'vue-toastification';
 
 export default {
   components: { NavBar },
   setup() {
+    const toast = useToast();
     const email = ref('');
     const password = ref('');
     const phone = ref('');
@@ -43,20 +45,26 @@ export default {
         email: email.value,
         password: password.value,
         phone: phone.value
+      }).then((response) => {
+        console.log('Registro exitoso:', response.data);
+        toast.success('Registro exitoso. Ahora inicia sesión.');
+
+        email.value = '';
+        password.value = '';
+        phone.value = '';
+
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 3000);
+
+      }).catch((error) => {
+        console.error('Error en el registro:', error.response.data);
+        toast.error('Error al crear la cuenta. Intenta de nuevo.');
       });
 
-      alert('Cuenta creada exitosamente. Ahora inicia sesión.');
-
-      // Limpiar los campos después del registro exitoso
-      email.value = '';
-      password.value = '';
-      phone.value = '';
-
-      // Redirigir al login
-      window.location.href = '/login';
     } catch (error) {
       console.error('Error en registro:', error);
-      alert('Error al crear la cuenta. Intenta de nuevo.');
+      toast.error('Error al crear la cuenta. Intenta de nuevo.');
     }
   };
 
