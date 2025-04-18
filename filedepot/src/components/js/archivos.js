@@ -82,33 +82,46 @@ export const actualizarNombreArchivo = async (idFILE, newName) => {
 };
 
 //Download
+
 export const descargarArchivo = async (idFILE) => {
   try {
-    const response = await apiClient.get(`/archivo/${idFILE}`, {
-      responseType: 'blob'
+   
+    const response = await apiClient.get(`/files/download/${idFILE}`, {
+      responseType: 'json'  
     });
 
-    // Intentamos extraer el nombre del archivo desde los headers
-    const disposition = response.headers['content-disposition'];
-    let fileName = 'archivo_descargado';
+   
+    if (response.data.success) {
+      const { filename, fileType, data } = response.data;
 
-    if (disposition && disposition.includes('filename=')) {
-      fileName = disposition
-        .split('filename=')[1]
-        .replace(/"/g, '')
-        .trim();
+     
+      const binaryData = atob(data); 
+      const byteArray = new Uint8Array(binaryData.length);
+
+      // Convertimos el string binario a un arreglo de bytes
+      for (let i = 0; i < binaryData.length; i++) {
+        byteArray[i] = binaryData.charCodeAt(i);
+      }
+
+      
+      const blob = new Blob([byteArray], { type: fileType });
+
+   
+      const link = document.createElement('a');
+      const url = window.URL.createObjectURL(blob);  
+      link.href = url;
+      link.setAttribute('download', filename);  
+      document.body.appendChild(link);
+      link.click();  
+
+     
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } else {
+      console.error('Error en la respuesta del servidor:', response.data.message);
     }
-
-    // Crear un blob y un enlace para forzar la descarga
-    const blob = new Blob([response.data]);
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download = fileName;
-    link.click();
-
-    // Limpiar
-    window.URL.revokeObjectURL(link.href);
   } catch (error) {
     console.error('Error al descargar archivo:', error);
   }
 };
+
