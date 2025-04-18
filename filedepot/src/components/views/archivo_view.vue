@@ -152,6 +152,7 @@ export default {
   setup(props, { emit }) {
 
     const emailCompartir = ref('');
+    const selectedMoveFolder = ref(null);
 
     const handleCompartir = async () => {
       if (!emailCompartir.value) {
@@ -253,7 +254,9 @@ export default {
       directorioActualId,
       handleCompartir,
       emailCompartir,
-      carpetas
+      carpetas,
+      selectedMoveFolder,
+      moverArchivo,
     };
   }
 };
