@@ -1,16 +1,19 @@
 import { ref } from "vue";
-import apiClient from "@/api/api"; // Asegúrate de que api.js contiene la configuración de Axios
+import apiClient from "@/api/api"; // Axios
 
 const mostrarModal = ref(false);
 const nombreCarpeta = ref("");
+const idPadreCarpeta = ref(null); // Nuevo: para guardar el ID del directorio padre
 
-const mostrarNuevaCarpeta = () => {
+const mostrarNuevaCarpeta = (idPadre) => {
+  idPadreCarpeta.value = idPadre;
   mostrarModal.value = true;
 };
 
 const cerrarModal = () => {
   mostrarModal.value = false;
-  nombreCarpeta.value = ""; // Limpiar el input
+  nombreCarpeta.value = "";
+  idPadreCarpeta.value = null;
 };
 
 const crearCarpeta = async () => {
@@ -19,17 +22,30 @@ const crearCarpeta = async () => {
     return;
   }
 
-  try {
-    const response = await apiClient.post("/directories", {
-      nombre: nombreCarpeta.value,
-    });
+  if (!idPadreCarpeta.value) {
+    alert("No se especificó el directorio padre.");
+    return;
+  }
 
-    alert(response.data.message); // Mostrar mensaje de respuesta del backend
-    cerrarModal(); // Cerrar modal después de crear la carpeta
+  try {
+    const response = await apiClient.post(`/directories/${idPadreCarpeta.value}`, {
+      subdirectory: nombreCarpeta.value,
+    });
+    if (response.status === 201) {
+      alert("Carpeta creada exitosamente.");
+    }
+
+    cerrarModal();
   } catch (error) {
     console.error("Error al crear la carpeta:", error);
     alert("Error al crear la carpeta.");
   }
 };
 
-export { mostrarModal, nombreCarpeta, mostrarNuevaCarpeta, cerrarModal, crearCarpeta };
+export {
+  mostrarModal,
+  nombreCarpeta,
+  mostrarNuevaCarpeta,
+  cerrarModal,
+  crearCarpeta,
+};

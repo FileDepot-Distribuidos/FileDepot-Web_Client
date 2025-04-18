@@ -122,3 +122,28 @@ export const descargarArchivo = async (idFILE) => {
     console.error('Error al descargar archivo:', error);
   }
 };
+
+//mover archivo
+
+export const moverArchivo = async (carpeta) => {
+  if (!archivoParaMover.value || !carpeta.idDIRECTORY) return;
+
+  try {
+    const response = await apiClient.put('/directories/move', {
+      fileID: archivoParaMover.value.idFILE,
+      newDirectoryID: carpeta.idDIRECTORY,
+    });
+
+    if (response.status === 200) {
+      alert(`Archivo movido correctamente`);
+      cerrar_ventana();
+      cargarArchivos(carpetaSeleccionadaId.value || carpeta.idDIRECTORY); // Actualiza según contexto
+    } else {
+      alert('No se pudo mover el archivo');
+    }
+  } catch (error) {
+    console.error('Error al mover archivo:', error);
+    alert('Ocurrió un error al mover el archivo');
+  }
+};
+

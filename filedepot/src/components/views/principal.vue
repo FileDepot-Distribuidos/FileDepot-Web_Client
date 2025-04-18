@@ -24,10 +24,10 @@
 
       <div v-if="ventana_agregar" class="agregar" @click.stop>
         <div class="conte">
-          <p @click="mostrarNuevaCarpeta">
-            <i class="pi pi-folder" style="margin-right: 8px;"></i>
-            Nueva carpeta
-          </p>
+          <p @click="() => mostrarNuevaCarpeta('ID_DEL_DIRECTORIO_PADRE')">
+  <i class="pi pi-folder" style="margin-right: 8px;"></i>
+  Nueva carpeta
+</p>
           <p @click="subirArchivo">
             <i class="pi pi-upload" style="margin-right: 8px;"></i>
             Subir archivo
@@ -67,10 +67,14 @@ import ListaArchivos from '@/components/views/Lista_Archivos.vue';
 import ArchivosCompartidos from '@/components/views/Archivos_Compartidos.vue';
 import AlmacenamientoArchivos from '@/components/views/Almacenamiento_Archivos.vue';
 import Archivos_carpeta from '@/components/views/Archivos_carpeta.vue';
-import { mostrarModal, nombreCarpeta, mostrarNuevaCarpeta, cerrarModal, crearCarpeta } from '@/components/js/crear_carpeta';
-// import { sign } from 'core-js/core/number';
+import {
+  mostrarModal,
+  nombreCarpeta,
+  mostrarNuevaCarpeta,
+  cerrarModal,
+  crearCarpeta
+} from '@/components/js/crear_carpeta';
 import { useAuthStore } from '@/stores/authStore';
-
 
 export default {
   name: "PrincipalView",
@@ -81,6 +85,9 @@ export default {
     Archivos_carpeta
   },
   setup() {
+    // Simulación: ID del directorio padre actual
+    const idDirectorioSeleccionado = '123456'; // Reemplaza esto con tu lógica real
+
     return {
       vistaActual,
       cambiarVista,
@@ -95,6 +102,7 @@ export default {
       mostrarNuevaCarpeta,
       cerrarModal,
       crearCarpeta,
+      idDirectorioSeleccionado,
     };
   },
   methods: {
