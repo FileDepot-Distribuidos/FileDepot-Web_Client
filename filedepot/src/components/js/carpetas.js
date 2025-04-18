@@ -21,6 +21,20 @@ export const cargarCarpetas = async (idDirectorio) => {
   }
 };
 
+export const togglePopupCarpeta = (tipo, payload = null) => {
+  switch (tipo) {
+    case 'opciones':
+      carpetaSeleccionadaId.value =
+        carpetaSeleccionadaId.value === payload ? null : payload;
+      break;
+    case 'renombrar':
+      carpetaParaRenombrar.value = { ...payload };
+      ventana_renombrar_carpeta.value = true;
+      carpetaSeleccionadaId.value = null;
+      break;
+  }
+};
+
 // export const eliminarCarpeta = async (idFOLDER) => {
 //   try {
 //     await apiClient.delete('/folders', {

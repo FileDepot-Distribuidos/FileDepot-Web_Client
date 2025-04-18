@@ -15,10 +15,13 @@
 
       <i
   class="pi pi-ellipsis-v"
-  @click.stop="togglePopupCarpeta('opciones', carpeta.idFOLDER)"
-></i>
+  @click.stop="() => {
+    console.log('Abriendo opciones para', carpeta.idDIRECTORY);
+    togglePopupCarpeta('opciones', carpeta.idDIRECTORY);
+  }"
+/>
 
-      <div v-if="carpetaSeleccionadaId === carpeta.idFOLDER" class="opciones" @click.stop>
+      <div v-if="carpetaSeleccionadaId === carpeta.idDIRECTORY" class="opciones" @click.stop>
         <div class="conte">
           <p @click="abrirVentanaRenombrar(carpeta)">
             <i class="pi pi-file-edit" style="margin-right: 8px;"></i> Cambiar nombre
@@ -50,19 +53,17 @@
 <script>
 import {
   carpetas,
-  carpetaSeleccionadaId,
   cargarCarpetas,
   eliminarCarpeta,
   actualizarNombreCarpeta,
+  carpetaSeleccionadaId,
   togglePopupCarpeta,
   cerrar_ventana_carpetas,
   ventana_renombrar_carpeta,
   carpetaParaRenombrar
 } from '../js/carpetas.js';
 import {
-
   togglePopup,
-
 } from '../js/archivos.js'
 import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
 
