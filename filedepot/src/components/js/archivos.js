@@ -4,9 +4,12 @@ import apiClient from '@/api/api.js';
 export const archivos = ref([]);
 export const ventana_agregar = ref(false);
 export const ventana_renombrar = ref(false);
+export const ventana_compartir = ref(false);
 export const archivoSeleccionadoId = ref(null);
+export const carpetaSeleccionadaId = ref(null);
 export const archivoParaRenombrar = ref(null);
 export const archivoParaMover = ref(false);
+export const archivoParaCompartir = ref(false);
 
 export const togglePopup = (tipo, payload = null) => {
   switch (tipo) {
@@ -16,15 +19,21 @@ export const togglePopup = (tipo, payload = null) => {
       break;
     case 'opciones':
       archivoSeleccionadoId.value = archivoSeleccionadoId.value === payload ? null : payload;
+
       ventana_agregar.value = false;
       break;
     case 'renombrar':
       archivoParaRenombrar.value = { ...payload };
       ventana_renombrar.value = true;
+      archivoSeleccionadoId.value = null;
       break;
     case 'mover':
       archivoParaMover.value = { ...payload };
+      archivoSeleccionadoId.value = null;
       break;
+    case 'compartir':
+      archivoParaCompartir.value = { ...payload};
+      ventana_compartir.value = true;
   }
 };
 
@@ -32,6 +41,7 @@ export const cerrar_ventana = () => {
   ventana_agregar.value = false;
   ventana_renombrar.value = false;
   archivoSeleccionadoId.value = null;
+  ventana_compartir.value = false;
   archivoParaMover.value = false;
 };
 

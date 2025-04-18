@@ -10,15 +10,18 @@
         {{ carpeta.path.split('/').pop() }}
       </p>
       <p>{{ new Date(carpeta.creation_date).toLocaleDateString('en-GB') || '00/00/2000' }}</p>
-      <p>15/04/2025</p>
-      <p>20mb</p>
+      <p>—</p>
+      <p>—</p>
 
       <i
-        class="pi pi-ellipsis-v"
-        @click.stop="togglePopup('opciones', carpeta.idFOLDER)"
-      ></i>
+  class="pi pi-ellipsis-v"
+  @click.stop="() => {
+    console.log('Abriendo opciones para', carpeta.idDIRECTORY);
+    togglePopupCarpeta('opciones', carpeta.idDIRECTORY);
+  }"
+/>
 
-      <div v-if="carpetaSeleccionadaId === carpeta.idFOLDER" class="opciones" @click.stop>
+      <div v-if="carpetaSeleccionadaId === carpeta.idDIRECTORY" class="opciones" @click.stop>
         <div class="conte">
           <p @click="abrirVentanaRenombrar(carpeta)">
             <i class="pi pi-file-edit" style="margin-right: 8px;"></i> Cambiar nombre
@@ -40,7 +43,7 @@
         <input type="text" v-model="carpetaRenombrar.name" />
         <div class="modal-buttons">
           <button @click="confirmarRenombrar">Guardar</button>
-          <button @click="cerrarVentana" id="cancelar">Cancelar</button>
+          <button @click.stop id="cancelar">Cancelar</button>
         </div>
       </div>
     </div>
@@ -50,16 +53,18 @@
 <script>
 import {
   carpetas,
-  carpetaSeleccionadaId,
   cargarCarpetas,
   eliminarCarpeta,
   actualizarNombreCarpeta,
+  carpetaSeleccionadaId,
   togglePopupCarpeta,
   cerrar_ventana_carpetas,
   ventana_renombrar_carpeta,
-  carpetaParaRenombrar,
-  
+  carpetaParaRenombrar
 } from '../js/carpetas.js';
+import {
+  togglePopup,
+} from '../js/archivos.js'
 import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
 
 import { onMounted, computed } from 'vue';
@@ -112,7 +117,8 @@ export default {
       cerrarVentana,
       ventanaRenombrar,
       carpetaRenombrar,
-      togglePopup: togglePopupCarpeta
+      togglePopup,
+      togglePopupCarpeta
     };
   }
 };
