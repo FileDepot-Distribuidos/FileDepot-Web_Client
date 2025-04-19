@@ -1,0 +1,170 @@
+<template>
+  <div class="container" @click="cerrar_ventana">
+    <nav class="navbar">
+      <div class="logo">
+        <img src="@/assets/logo.png" alt="FileDepot" />
+        <span>FileDepot</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-container">
+      <aside class="sidebar">
+        <div id="new-button" @click.stop="togglePopup('agregar')">
+          <h4 class="pi pi-plus-circle"></h4>
+          <h4 class="text">Nuevo</h4>
+        </div>
+        <ul>
+          <li @click="cambiarVista('principal')"><i class="pi pi-home"></i> Principal</li>
+          <li @click="cambiarVista('compartidos')"><i class="pi pi-users"></i> Compartidos</li>
+          <li @click="cambiarVista('almacenamiento')"><i class="pi pi-cloud"></i> Almacenamiento</li>
+          <li @click="signOut"><i class="pi pi-sign-out"></i> Cerrar sesión</li>
+        </ul>
+      </aside>
+
+      <div v-if="ventana_agregar" class="agregar" @click.stop>
+        <div class="conte">
+          <p @click="mostrarNuevaCarpeta">
+            <i class="pi pi-folder" style="margin-right: 8px;"></i>
+            Nueva carpeta
+          </p>
+          <p @click="subirArchivo">
+            <i class="pi pi-upload" style="margin-right: 8px;"></i>
+            Subir archivo
+          </p>
+        </div>
+      </div>
+
+      <input type="file" ref="fileInput" style="display: none" @change="manejarArchivo" multiple />
+
+      <div class="contenido">
+        <ListaArchivos v-if="vistaActual === 'principal'" />
+        <ArchivosCompartidos v-if="vistaActual === 'compartidos'" />
+        <AlmacenamientoArchivos v-if="vistaActual === 'almacenamiento'" />
+        <Archivos_carpeta v-if="vistaActual === 'archivos_carpeta'" />
+      </div>
+    </div>
+
+    <!-- Modal Nueva Carpeta -->
+    <div v-if="mostrarModal" class="agregar_carpeta">
+      <div class="modal-contenido">
+        <h3>Nueva carpeta</h3>
+        <input type="text" v-model="nombreCarpeta" placeholder="Título" />
+        <div class="modal-botones">
+          <button @click="cerrarModal" id="cancelar">Cancelar</button>
+          <button @click="crearCarpeta">Crear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { ref, onMounted } from "vue";
+import apiClient from "@/api/api";
+import { useAuthStore } from '@/stores/authStore';
+
+import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
+import { ventana_agregar, togglePopup, cerrar_ventana } from '../js/archivos';
+import { fileInput, subirArchivo, manejarArchivo } from '@/components/js/subir_archivo';
+import { cargarTodosLosDirectorios } from '@/components/js/carpetas';
+
+import ListaArchivos from '@/components/views/Lista_Archivos.vue';
+import ArchivosCompartidos from '@/components/views/Archivos_Compartidos.vue';
+import AlmacenamientoArchivos from '@/components/views/Almacenamiento_Archivos.vue';
+import Archivos_carpeta from '@/components/views/Archivos_carpeta.vue';
+
+export default {
+  name: "PrincipalView",
+  components: {
+    ListaArchivos,
+    ArchivosCompartidos,
+    AlmacenamientoArchivos,
+    Archivos_carpeta
+  },
+  setup() {
+    const mostrarModal = ref(false);
+    const nombreCarpeta = ref("");
+    const idPadreCarpeta = ref(null);
+    const primerDirectorioId = ref(null);
+
+    const mostrarNuevaCarpeta = () => {
+      idPadreCarpeta.value = primerDirectorioId.value;
+      mostrarModal.value = true;
+    };
+
+    const cerrarModal = () => {
+      mostrarModal.value = false;
+      nombreCarpeta.value = "";
+      idPadreCarpeta.value = null;
+    };
+
+    const crearCarpeta = async () => {
+      if (!nombreCarpeta.value.trim()) {
+        alert("El nombre de la carpeta no puede estar vacío.");
+        return;
+      }
+
+      if (!idPadreCarpeta.value) {
+        alert("No se especificó el directorio padre.");
+        return;
+      }
+
+      const nuevaRuta = `${idPadreCarpeta.value}/${nombreCarpeta.value}`;
+
+      try {
+        const response = await apiClient.post("/directories", {
+          path: nuevaRuta,
+          isRoot: false,
+          parentDirectory: idPadreCarpeta.value,
+        });
+
+        if (response.status === 201) {
+          alert("Carpeta creada exitosamente.");
+          const nuevoPrimerId = await cargarTodosLosDirectorios();
+          primerDirectorioId.value = nuevoPrimerId;
+        }
+
+        cerrarModal();
+      } catch (error) {
+        console.error("Error al crear la carpeta:", error);
+        alert("Error al crear la carpeta.");
+      }
+    };
+
+    onMounted(async () => {
+      const primerId = await cargarTodosLosDirectorios();
+      primerDirectorioId.value = primerId;
+    });
+
+    return {
+      vistaActual,
+      cambiarVista,
+      ventana_agregar,
+      togglePopup,
+      cerrar_ventana,
+      subirArchivo,
+      manejarArchivo,
+      fileInput,
+      mostrarModal,
+      nombreCarpeta,
+      mostrarNuevaCarpeta,
+      cerrarModal,
+      crearCarpeta,
+    };
+  },
+  methods: {
+    irHome() {
+      this.$router.push('/homepage');
+    },
+    signOut() {
+      const authStore = useAuthStore();
+      authStore.logout();
+      this.$router.push('/login');
+    },
+  },
+};
+</script>
+
+<style scoped>
+@import url('../style/sidebar.css');
+</style>
