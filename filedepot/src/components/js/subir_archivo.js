@@ -14,9 +14,14 @@ const subirArchivo = () => {
 };
 
 const manejarArchivo = (event) => {
-  const archivoSeleccionado = event.target.files[0];
+  const archivosSeleccionados = Array.from(event.target.files);
 
-  if (!archivoSeleccionado) return;
+  if (!archivosSeleccionados.length) return;
+
+  if (archivosSeleccionados.length > 5) {
+    toast.warning("Solo puedes subir hasta 5 archivos al mismo tiempo", { timeout: 3500 });
+    return;
+  }
 
   const tiposPermitidos = [
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
@@ -27,50 +32,50 @@ const manejarArchivo = (event) => {
     "image/jpeg",
   ];
 
-  if (!tiposPermitidos.includes(archivoSeleccionado.type)) {
-    toast.warning('Tipo de archivo no permitido. Solo se permiten Word, Excel, PowerPoint, PDF y PNG.', { timeout: 3500 });
-    setTimeout(() => {
-      window.location.reload();
-    }, 3500);
+  const archivosValidos = archivosSeleccionados.filter(archivo =>
+    tiposPermitidos.includes(archivo.type)
+  );
+
+  if (archivosValidos.length !== archivosSeleccionados.length) {
+    toast.warning('Algunos archivos tienen un tipo no permitido. Solo se permiten Word, Excel, PowerPoint, PDF, PNG y JPG.', { timeout: 4000 });
     return;
   }
 
-  const reader = new FileReader();
-
-  reader.onload = () => {
-    const base64Data = reader.result;
-
-    const fileData = {
-      name: archivoSeleccionado.name,
-      type: archivoSeleccionado.type,
-      size: archivoSeleccionado.size,
-      base64: base64Data,
-    };
-
-    apiClient
-      .post("/files", fileData)
-      .then((response) => {
-        console.log(response.data);
-        toast.success('Archivo subido correctamente', { timeout: 2000 });
-        setTimeout(() => {
-          cargarArchivos(directorioActualId.value);
-        }, 2000);
-      })
-      .catch((error) => {
-        console.error("Error al enviar el archivo:", error);
-        toast.error('Error al subir el archivo', { timeout: 2000 });
-        setTimeout(() => {
-          cargarArchivos(directorioActualId.value);
-        }, 2000);
-      });
+  // Leer archivos como base64
+  const leerArchivo = (archivo) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve({
+          name: archivo.name,
+          type: archivo.type,
+          size: archivo.size,
+          base64: reader.result,
+        });
+      };
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(archivo);
+    });
   };
 
-  reader.onerror = (error) => {
-    console.error("Error al leer el archivo:", error);
-    alert("No se pudo leer el archivo");
-  };
-
-  reader.readAsDataURL(archivoSeleccionado);
+  Promise.all(archivosValidos.map(leerArchivo))
+    .then((archivosProcesados) => {
+      return apiClient.post("/files", { files: archivosProcesados });
+    })
+    .then((response) => {
+      console.log(response.data);
+      toast.success("Archivos subidos correctamente", { timeout: 2000 });
+      setTimeout(() => {
+        cargarArchivos(directorioActualId.value);
+      }, 2000);
+    })
+    .catch((error) => {
+      console.error("Error al subir archivos:", error);
+      toast.error("Error al subir los archivos", { timeout: 2000 });
+      setTimeout(() => {
+        cargarArchivos(directorioActualId.value);
+      }, 2000);
+    });
 };
 
 export { fileInput, subirArchivo, manejarArchivo };

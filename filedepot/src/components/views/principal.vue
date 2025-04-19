@@ -34,7 +34,7 @@
         </div>
       </div>
 
-      <input type="file" ref="fileInput" style="display: none" @change="manejarArchivo" />
+      <input type="file" ref="fileInput" style="display: none" @change="manejarArchivo" multiple />
 
       <div class="contenido">
         <ListaArchivos v-if="vistaActual === 'principal'" />

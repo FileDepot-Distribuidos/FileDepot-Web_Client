@@ -1,6 +1,8 @@
 import { ref } from 'vue';
 import apiClient from '@/api/api.js';
 import { useToast } from 'vue-toastification';
+import { directorioActualId } from '@/components/js/principalViewLogic';
+
 
 export const carpetas = ref([]);
 export const carpetaSeleccionadaId = ref(null);
@@ -75,30 +77,40 @@ export const cargarTodosLosDirectorios = async () => {
 // };
 
 
-// export const eliminarCarpeta = async (idFOLDER) => {
-//   try {
-//     await apiClient.delete('/folders', {
-//       data: { folderID: idFOLDER },
-//     });
-//     await cargarCarpetas(); // Recargar
-//     cerrar_ventana_carpetas();
-//   } catch (error) {
-//     console.error('Error al eliminar carpeta:', error);
-//   }
-// };
+export const eliminarCarpeta = async (idDIRECTORY) => {
+  try {
+    await apiClient.delete('/directories', {
+      data: { directoryID: idDIRECTORY },
+    });
+    await cargarCarpetas(directorioActualId.value);
+    toast.success('Carpeta eliminada correctamente', { timeout: 2000 });
+    cerrar_ventana_carpetas();
+  } catch (error) {
+    console.error('Error al eliminar carpeta:', error);
+    toast.error('Error al eliminar carpeta', { timeout: 2000 });
+    cerrar_ventana_carpetas();  
+  }
+};
 
-// export const actualizarNombreCarpeta = async (idFOLDER, newName) => {
-//   try {
-//     await apiClient.put('/folders/rename', {
-//       oldFolderName: idFOLDER,
-//       newFolderName: newName,
-//     });
-//     await cargarCarpetas();
-//     cerrar_ventana_carpetas();
-//   } catch (error) {
-//     console.error('Error al renombrar carpeta:', error);
-//   }
-// };
+export const actualizarNombreCarpeta = async (idDIRECTORY, newName) => {
+  try {
+    
+    console.log('Renombrando carpeta:', idDIRECTORY, 'a', newName);
+
+    await apiClient.put('/directories/rename', {
+      directoryID: idDIRECTORY,
+      newName: newName,
+    });
+
+    toast.success('Carpeta renombrada correctamente', { timeout: 2000 });
+    await cargarCarpetas(directorioActualId.value);
+    cerrar_ventana_carpetas();
+  } catch (error) {
+    console.error('Error al renombrar carpeta:', error);
+    toast.error('Error al renombrar carpeta', { timeout: 2000 });
+    cerrar_ventana_carpetas();
+  }
+};
 
 
 export const cerrar_ventana_carpetas = () => {

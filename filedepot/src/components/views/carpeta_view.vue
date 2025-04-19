@@ -26,7 +26,7 @@
           <p @click="abrirVentanaRenombrar(carpeta)">
             <i class="pi pi-file-edit" style="margin-right: 8px;"></i> Cambiar nombre
           </p>
-          <p @click="eliminarCarpetaDesdeVista(carpeta.idFOLDER)">
+          <p @click="eliminarCarpetaDesdeVista(carpeta.idDIRECTORY)">
             <i class="pi pi-trash" style="margin-right: 8px;"></i> Eliminar carpeta
           </p>
           <p @click="abrirVentanaCompartir(carpeta)">
@@ -47,7 +47,7 @@
         <input type="text" v-model="carpetaRenombrar.name" />
         <div class="modal-buttons">
           <button @click="confirmarRenombrar">Guardar</button>
-          <button @click.stop id="cancelar">Cancelar</button>
+          <button @click="cerrarVentana" id="cancelar">Cancelar</button>
         </div>
       </div>
     </div>
@@ -131,6 +131,7 @@ export default {
     };
 
     const abrirVentanaRenombrar = (carpeta) => togglePopupCarpeta('renombrar', carpeta);
+
     const eliminarCarpetaDesdeVista = async (id) => {
       if (confirm("¿Estás seguro de eliminar esta carpeta?")) {
         await eliminarCarpeta(id);
@@ -140,7 +141,7 @@ export default {
 
     const confirmarRenombrar = () => {
       if (carpetaRenombrar.value) {
-        actualizarNombreCarpeta(carpetaRenombrar.value.idFOLDER, carpetaRenombrar.value.name);
+        actualizarNombreCarpeta(carpetaRenombrar.value.idDIRECTORY, carpetaRenombrar.value.name);
       }
     };
 

@@ -63,7 +63,7 @@ export default {
       ventana_opciones,
       togglePopup,
       cerrar_ventana,
-      directorioActualId, // <-- importar el ID actual
+      directorioActualId,
       vistaActual,
       cambiarVista,
     };
