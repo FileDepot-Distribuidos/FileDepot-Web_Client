@@ -5,9 +5,8 @@
         <img src="@/assets/logo.png" alt="FileDepot" />
         <span>FileDepot</span>
       </div>
-
     </nav>
-    
+
     <div class="sidebar-container">
       <aside class="sidebar">
         <div id="new-button" @click.stop="togglePopup('agregar')">
@@ -24,10 +23,10 @@
 
       <div v-if="ventana_agregar" class="agregar" @click.stop>
         <div class="conte">
-          <p @click="() => mostrarNuevaCarpeta('ID_DEL_DIRECTORIO_PADRE')">
-  <i class="pi pi-folder" style="margin-right: 8px;"></i>
-  Nueva carpeta
-</p>
+          <p @click="mostrarNuevaCarpeta">
+            <i class="pi pi-folder" style="margin-right: 8px;"></i>
+            Nueva carpeta
+          </p>
           <p @click="subirArchivo">
             <i class="pi pi-upload" style="margin-right: 8px;"></i>
             Subir archivo
@@ -36,7 +35,7 @@
       </div>
 
       <input type="file" ref="fileInput" style="display: none" @change="manejarArchivo" />
-      
+
       <div class="contenido">
         <ListaArchivos v-if="vistaActual === 'principal'" />
         <ArchivosCompartidos v-if="vistaActual === 'compartidos'" />
@@ -60,21 +59,19 @@
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
+import apiClient from "@/api/api";
+import { useAuthStore } from '@/stores/authStore';
+
 import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
 import { ventana_agregar, togglePopup, cerrar_ventana } from '../js/archivos';
 import { fileInput, subirArchivo, manejarArchivo } from '@/components/js/subir_archivo';
+import { cargarTodosLosDirectorios } from '@/components/js/carpetas';
+
 import ListaArchivos from '@/components/views/Lista_Archivos.vue';
 import ArchivosCompartidos from '@/components/views/Archivos_Compartidos.vue';
 import AlmacenamientoArchivos from '@/components/views/Almacenamiento_Archivos.vue';
 import Archivos_carpeta from '@/components/views/Archivos_carpeta.vue';
-import {
-  mostrarModal,
-  nombreCarpeta,
-  mostrarNuevaCarpeta,
-  cerrarModal,
-  crearCarpeta
-} from '@/components/js/crear_carpeta';
-import { useAuthStore } from '@/stores/authStore';
 
 export default {
   name: "PrincipalView",
@@ -85,8 +82,59 @@ export default {
     Archivos_carpeta
   },
   setup() {
-    // Simulación: ID del directorio padre actual
-    const idDirectorioSeleccionado = '123456'; // Reemplaza esto con tu lógica real
+    const mostrarModal = ref(false);
+    const nombreCarpeta = ref("");
+    const idPadreCarpeta = ref(null);
+    const primerDirectorioId = ref(null);
+
+    const mostrarNuevaCarpeta = () => {
+      idPadreCarpeta.value = primerDirectorioId.value;
+      mostrarModal.value = true;
+    };
+
+    const cerrarModal = () => {
+      mostrarModal.value = false;
+      nombreCarpeta.value = "";
+      idPadreCarpeta.value = null;
+    };
+
+    const crearCarpeta = async () => {
+      if (!nombreCarpeta.value.trim()) {
+        alert("El nombre de la carpeta no puede estar vacío.");
+        return;
+      }
+
+      if (!idPadreCarpeta.value) {
+        alert("No se especificó el directorio padre.");
+        return;
+      }
+
+      const nuevaRuta = `${idPadreCarpeta.value}/${nombreCarpeta.value}`;
+
+      try {
+        const response = await apiClient.post("/directories", {
+          path: nuevaRuta,
+          isRoot: false,
+          parentDirectory: idPadreCarpeta.value,
+        });
+
+        if (response.status === 201) {
+          alert("Carpeta creada exitosamente.");
+          const nuevoPrimerId = await cargarTodosLosDirectorios();
+          primerDirectorioId.value = nuevoPrimerId;
+        }
+
+        cerrarModal();
+      } catch (error) {
+        console.error("Error al crear la carpeta:", error);
+        alert("Error al crear la carpeta.");
+      }
+    };
+
+    onMounted(async () => {
+      const primerId = await cargarTodosLosDirectorios();
+      primerDirectorioId.value = primerId;
+    });
 
     return {
       vistaActual,
@@ -102,7 +150,6 @@ export default {
       mostrarNuevaCarpeta,
       cerrarModal,
       crearCarpeta,
-      idDirectorioSeleccionado,
     };
   },
   methods: {

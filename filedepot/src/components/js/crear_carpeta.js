@@ -3,13 +3,12 @@ import apiClient from "@/api/api"; // Axios
 
 const mostrarModal = ref(false);
 const nombreCarpeta = ref("");
-const idPadreCarpeta = ref(null); // Nuevo: para guardar el ID del directorio padre
+export const directorioActualId = ref(null); // Nuevo: para guardar el ID del directorio padre
 
-const mostrarNuevaCarpeta = (idPadre) => {
-  idPadreCarpeta.value = idPadre;
+const mostrarNuevaCarpeta = (directorioActualId) => {
+  idPadreCarpeta.value = directorioActualId;
   mostrarModal.value = true;
 };
-
 const cerrarModal = () => {
   mostrarModal.value = false;
   nombreCarpeta.value = "";
@@ -22,15 +21,21 @@ const crearCarpeta = async () => {
     return;
   }
 
-  if (!idPadreCarpeta.value) {
+  if (!directorioActualId.value) {
     alert("No se especificó el directorio padre.");
     return;
   }
 
+  const nuevaRuta = `${String(directorioActualId.value)}/${String(nombreCarpeta.value)}`;
+
+
   try {
-    const response = await apiClient.post(`/directories/${idPadreCarpeta.value}`, {
-      subdirectory: nombreCarpeta.value,
+    const response = await apiClient.post("/directories", {
+      path: nuevaRuta,
+      isRoot: false,
+      parentDirectory: idPadreCarpeta ,  // Asegúrate de que esto sea lo que espera la API
     });
+
     if (response.status === 201) {
       alert("Carpeta creada exitosamente.");
     }

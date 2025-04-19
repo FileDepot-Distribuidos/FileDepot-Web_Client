@@ -21,6 +21,26 @@ export const cargarCarpetas = async (idDirectorio) => {
   }
 };
 
+export const cargarTodosLosDirectorios = async () => {
+  try {
+    const res = await apiClient.get('/directories');
+    
+    const data = Array.isArray(res.data) ? res.data : res.data.folders;
+
+    console.log('Todos los directorios del usuario:', data);
+    console.log("Primer objeto en la lista:", data[0]);
+
+    const primerDirectorio = data[0]?.idDIRECTORY;
+    console.log("Primer ID de directorio:", primerDirectorio);
+
+    return primerDirectorio;
+
+  } catch (error) {
+    console.error('Error al cargar todos los directorios:', error);
+  }
+};
+
+
 export const togglePopupCarpeta = (tipo, payload = null) => {
   switch (tipo) {
     case 'opciones':
