@@ -49,6 +49,7 @@
 import Archivo_view from './archivo_view.vue';
 import Carpeta_view from './carpeta_view.vue';
 import { directorioActualId } from '@/components/js/principalViewLogic';
+import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
 
 export default {
   name: "archivos_carpeta",
@@ -57,11 +58,14 @@ export default {
     Carpeta_view
   },
   setup() {
+    console.log('Directorio actual:', directorioActualId); // Verifica el ID actual en la consola
     return {
       ventana_opciones,
       togglePopup,
       cerrar_ventana,
       directorioActualId, // <-- importar el ID actual
+      vistaActual,
+      cambiarVista,
     };
   },
 };
