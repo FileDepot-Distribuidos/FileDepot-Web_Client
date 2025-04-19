@@ -5,7 +5,7 @@
       v-for="carpeta in carpetas"
       :key="carpeta.idDIRECTORY"
     >
-      <p  @click="cambiarVista('archivos_carpeta',carpeta.idDIRECTORY)">
+      <p @click="cambiarVista('archivos_carpeta', carpeta.idDIRECTORY)">
         <i class="pi pi-folder" style="margin-right: 8px;"></i>
         {{ carpeta.path.split('/').pop() }}
       </p>
@@ -14,14 +14,18 @@
       <p>—</p>
 
       <i
-  class="pi pi-ellipsis-v"
-  @click.stop="() => {
-    console.log('Abriendo opciones para', carpeta.idDIRECTORY);
-    togglePopupCarpeta('opciones', carpeta.idDIRECTORY);
-  }"
-/>
+        class="pi pi-ellipsis-v"
+        @click.stop="() => {
+          console.log('Abriendo opciones para', carpeta.idDIRECTORY);
+          togglePopupCarpeta('opciones', carpeta.idDIRECTORY);
+        }"
+      />
 
-      <div v-if="carpetaSeleccionadaId === carpeta.idDIRECTORY" class="opciones" @click.stop>
+      <div
+        v-if="carpetaSeleccionadaId === carpeta.idDIRECTORY"
+        class="opciones"
+        @click.stop
+      >
         <div class="conte">
           <p @click="abrirVentanaRenombrar(carpeta)">
             <i class="pi pi-file-edit" style="margin-right: 8px;"></i> Cambiar nombre
@@ -37,7 +41,9 @@
     </div>
 
     <div v-if="carpetas.length === 0" class="mensaje-vacio">
-      <p style="text-align: center; margin-top: 2rem; color: gray;">Todavía no hay carpetas</p>
+      <p style="text-align: center; margin-top: 2rem; color: gray;">
+        Todavía no hay carpetas
+      </p>
     </div>
 
     <!-- Modal para renombrar -->
@@ -52,30 +58,27 @@
       </div>
     </div>
 
-
-        <!-- Modal para compartir -->
-        <div v-if="ventanaCompartir" class="renombrar">
-          <div class="ventana" @click.stop>
-            <h3>Compartir carpeta</h3>
-            <input
-              type="email"
-              v-model="emailCompartir"
-              placeholder="Escribe el correo del usuario"
-            />
-            <div class="modal-buttons">
-              <button @click="handleCompartir">Compartir</button>
-              <button @click="cerrarVentana" id="cancelar">Cancelar</button>
-            </div>
-          </div>
+    <!-- Modal para compartir -->
+    <div v-if="ventanaCompartir" class="renombrar">
+      <div class="ventana" @click.stop>
+        <h3>Compartir carpeta</h3>
+        <input
+          type="email"
+          v-model="emailCompartir"
+          placeholder="Escribe el correo del usuario"
+        />
+        <div class="modal-buttons">
+          <button @click="handleCompartir">Compartir</button>
+          <button @click="cerrarVentana" id="cancelar">Cancelar</button>
         </div>
-
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import {
   carpetas,
-  cargarCarpetas,
   eliminarCarpeta,
   actualizarNombreCarpeta,
   carpetaSeleccionadaId,
@@ -85,15 +88,14 @@ import {
   carpetaParaRenombrar,
   ventana_compartir_carpeta,
   carpetaParaCompartir,
-  compartirCarpeta
+  compartirCarpeta,
+  cargarCarpetas,
 } from '../js/carpetas.js';
 
-import {
-  togglePopup,
-} from '../js/archivos.js'
+import { togglePopup } from '../js/archivos.js';
 import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
 
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 
 export default {
   name: 'carpeta_view',
@@ -104,7 +106,6 @@ export default {
     },
   },
   setup(props) {
-
     const emailCompartir = ref('');
 
     const handleCompartir = async () => {
@@ -117,42 +118,55 @@ export default {
       if (carpeta && carpeta.idDIRECTORY) {
         await compartirCarpeta(carpeta.idDIRECTORY, emailCompartir.value);
         emailCompartir.value = '';
-        cerrarVentana(); // <- esto cierra el modal
-
+        cerrarVentana();
       } else {
         console.error('No se ha seleccionado carpeta para compartir.');
       }
     };
 
-
     const abrirCarpeta = (id) => {
-      // Aquí puedes emitir o cambiar el directorio actual para que se actualicen archivos y carpetas
-      console.log("Abrir carpeta", id);
+      console.log('Abrir carpeta', id);
     };
 
-    const abrirVentanaRenombrar = (carpeta) => togglePopupCarpeta('renombrar', carpeta);
+    const abrirVentanaRenombrar = (carpeta) =>
+      togglePopupCarpeta('renombrar', carpeta);
     const eliminarCarpetaDesdeVista = async (id) => {
-      if (confirm("¿Estás seguro de eliminar esta carpeta?")) {
+      if (confirm('¿Estás seguro de eliminar esta carpeta?')) {
         await eliminarCarpeta(id);
       }
     };
-    const abrirVentanaCompartir = (carpeta) => togglePopupCarpeta('compartir', carpeta);
+    const abrirVentanaCompartir = (carpeta) =>
+      togglePopupCarpeta('compartir', carpeta);
 
     const confirmarRenombrar = () => {
       if (carpetaRenombrar.value) {
-        actualizarNombreCarpeta(carpetaRenombrar.value.idFOLDER, carpetaRenombrar.value.name);
+        actualizarNombreCarpeta(
+          carpetaRenombrar.value.idFOLDER,
+          carpetaRenombrar.value.name
+        );
       }
     };
 
-  const ventanaCompartir = computed(() => ventana_compartir_carpeta.value);
-
-    const cerrarVentana = () => cerrar_ventana_carpetas();
-
+    const ventanaCompartir = computed(() => ventana_compartir_carpeta.value);
     const ventanaRenombrar = computed(() => ventana_renombrar_carpeta.value);
     const carpetaRenombrar = computed(() => carpetaParaRenombrar.value);
 
+    const cerrarVentana = () => cerrar_ventana_carpetas();
+
+    // Reacciona cuando cambia el ID del directorio actual
+    watch(
+      () => props.idDirectorio,
+      (nuevoId) => {
+        console.log('📁 Cambió el idDirectorio a:', nuevoId);
+        cargarCarpetas(nuevoId);
+      },
+      { immediate: true }
+    );
+
     onMounted(() => {
-      cargarCarpetas(props.idDirectorio);
+      if (props.idDirectorio !== null) {
+        cargarCarpetas(props.idDirectorio);
+      }
     });
 
     return {
@@ -174,7 +188,7 @@ export default {
       handleCompartir,
       emailCompartir,
     };
-  }
+  },
 };
 </script>
 

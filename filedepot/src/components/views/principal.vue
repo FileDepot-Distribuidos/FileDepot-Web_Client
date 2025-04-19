@@ -86,6 +86,7 @@ export default {
     const nombreCarpeta = ref("");
     const idPadreCarpeta = ref(null);
     const primerDirectorioId = ref(null);
+    const pathdirectorio = ref(null);
 
     const mostrarNuevaCarpeta = () => {
       idPadreCarpeta.value = primerDirectorioId.value;
@@ -104,12 +105,13 @@ export default {
         return;
       }
 
-      if (!idPadreCarpeta.value) {
-        alert("No se especificó el directorio padre.");
+      if (!idPadreCarpeta.value || !pathdirectorio.value) {
+        alert("No se especificó el directorio padre o el path está vacío.");
         return;
       }
 
-      const nuevaRuta = `${idPadreCarpeta.value}/${nombreCarpeta.value}`;
+      const basePath = pathdirectorio.value.replace(/\/$/, ''); // elimina '/' al final si existe
+      const nuevaRuta = `${basePath}/${nombreCarpeta.value}`;
 
       try {
         const response = await apiClient.post("/directories", {
@@ -120,8 +122,9 @@ export default {
 
         if (response.status === 201) {
           alert("Carpeta creada exitosamente.");
-          const nuevoPrimerId = await cargarTodosLosDirectorios();
-          primerDirectorioId.value = nuevoPrimerId;
+          const nuevoPrimer = await cargarTodosLosDirectorios();
+          primerDirectorioId.value = nuevoPrimer.id;
+          pathdirectorio.value = nuevoPrimer.path;
         }
 
         cerrarModal();
@@ -132,8 +135,9 @@ export default {
     };
 
     onMounted(async () => {
-      const primerId = await cargarTodosLosDirectorios();
-      primerDirectorioId.value = primerId;
+      const primerDirectorio = await cargarTodosLosDirectorios();
+      primerDirectorioId.value = primerDirectorio.id;
+      pathdirectorio.value = primerDirectorio.path;
     });
 
     return {
@@ -164,6 +168,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 @import url('../style/sidebar.css');
