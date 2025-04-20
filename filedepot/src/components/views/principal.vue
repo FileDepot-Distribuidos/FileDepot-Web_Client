@@ -74,6 +74,7 @@ import { ventana_agregar, togglePopup, cerrar_ventana } from '../js/archivos';
 import { fileInput, subirArchivo, manejarArchivo } from '@/components/js/subir_archivo';
 import { cargarTodosLosDirectorios, cargarCarpetas } from '@/components/js/carpetas';
 import { useToast } from 'vue-toastification';
+import { directorioActualId } from '@/components/js/directorio_actual';
 
 import ListaArchivos from '@/components/views/Lista_Archivos.vue';
 import ArchivosCompartidos from '@/components/views/Archivos_Compartidos.vue';
@@ -142,6 +143,8 @@ export default {
       if (primero) {
         idPadreCarpeta.value = primero.id;
         pathdirectorio.value = primero.path.replace(/\/+$/, "");
+        directorioActualId.value = primero.id;
+        console.log("directorioActualId seteado desde onMounted:", directorioActualId.value);
       }
     });
     const directorioActivo = ref({ id: null, path: '' });
@@ -152,6 +155,7 @@ export default {
       console.log("📁 Directorio activo actualizado:", id, pathdirectorio.value);
       console.log("🧭 Nuevo directorio activo:", id, path);
       directorioActivo.value = { id, path };
+      directorioActualId.value = id;
     };
 
     return {

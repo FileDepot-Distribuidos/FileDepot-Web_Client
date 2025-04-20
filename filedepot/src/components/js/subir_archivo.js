@@ -57,11 +57,14 @@ const manejarArchivo = (event) => {
       reader.readAsDataURL(archivo);
     });
   };
-
   Promise.all(archivosValidos.map(leerArchivo))
-    .then((archivosProcesados) => {
-      return apiClient.post("/files", { files: archivosProcesados });
-    })
+  .then((archivosProcesados) => {
+    console.log('🧭 Directorio actual que se envía:', directorioActualId.value);
+    return apiClient.post("/files", {
+      files: archivosProcesados,
+      directoryId: directorioActualId.value, 
+    });
+  })
     .then((response) => {
       console.log(response.data);
       toast.success("Archivos subidos correctamente", { timeout: 2000 });
