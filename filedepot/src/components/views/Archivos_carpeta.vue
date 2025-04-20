@@ -1,6 +1,6 @@
 <template>
     <div class="contai">
-      <h1>Unidad > </h1>
+      <h1>Tu Filedepot </h1>
       <div class="content">
         <div class="file-table">
           <div class="header row">
@@ -9,7 +9,7 @@
             <p>Última modificación</p>
             <p>Tamaño</p>
           </div>
-          <Archivo_view :idDirectorio="directorioActualId" />
+          <Archivo_view :idDirectorio="directorioActualId"  />
           <Carpeta_view :idDirectorio="directorioActualId" />
         </div>
         </div>
@@ -51,6 +51,7 @@ import Carpeta_view from './carpeta_view.vue';
 import { directorioActualId } from '@/components/js/principalViewLogic';
 import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
 
+
 export default {
   name: "archivos_carpeta",
   components: {
@@ -58,7 +59,7 @@ export default {
     Carpeta_view
   },
   setup() {
-    console.log('Directorio actual:', directorioActualId); // Verifica el ID actual en la consola
+    console.log("📁 Directorio actual ID:", directorioActualId.value);
     return {
       ventana_opciones,
       togglePopup,

@@ -233,13 +233,25 @@ export default {
       emit('actualizarTotal', total);
     };
 
-    // Efectos
-    watch(archivos, calcularTotalTamano);
-    onMounted(() => {
-      cargarArchivos(props.idDirectorio);
-      cargarCarpetas(props.idDirectorio);
-      calcularTotalTamano();
-    });
+     // Efectos
+     watch(archivos, calcularTotalTamano);
+
+// Observamos el cambio en el idDirectorio y cargamos los archivos y carpetas correspondientes
+watch(
+  () => props.idDirectorio,
+  (nuevoIdDirectorio) => {
+    cargarArchivos(nuevoIdDirectorio); // Cargar los archivos del nuevo directorio
+    cargarCarpetas(nuevoIdDirectorio);  // Cargar las carpetas del nuevo directorio
+    calcularTotalTamano();
+  },
+  { immediate: true }  // Ejecutar al montar el componente también
+);
+
+onMounted(() => {
+  cargarArchivos(props.idDirectorio);
+  cargarCarpetas(props.idDirectorio);
+  calcularTotalTamano();
+});
 
     return {
       archivos,

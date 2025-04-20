@@ -37,10 +37,17 @@
       <input type="file" ref="fileInput" style="display: none" @change="manejarArchivo" multiple />
 
       <div class="contenido">
-        <ListaArchivos v-if="vistaActual === 'principal'" />
+        <!-- Escucha evento para actualizar ruta -->
+        <ListaArchivos
+          v-if="vistaActual === 'principal'"
+          @directorio-cambiado="actualizarDirectorioActivo"
+        />
         <ArchivosCompartidos v-if="vistaActual === 'compartidos'" />
         <AlmacenamientoArchivos v-if="vistaActual === 'almacenamiento'" />
-        <Archivos_carpeta v-if="vistaActual === 'archivos_carpeta'" />
+        <Archivos_carpeta
+          v-if="vistaActual === 'archivos_carpeta'"
+          @directorio-cambiado="actualizarDirectorioActivo"
+        />
       </div>
     </div>
 
@@ -60,9 +67,8 @@
 
 <script>
 import { ref, onMounted } from "vue";
-import apiClient from "@/api/api";
 import { useAuthStore } from '@/stores/authStore';
-
+import apiClient from "@/api/api";
 import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
 import { ventana_agregar, togglePopup, cerrar_ventana } from '../js/archivos';
 import { fileInput, subirArchivo, manejarArchivo } from '@/components/js/subir_archivo';
@@ -85,56 +91,65 @@ export default {
     const mostrarModal = ref(false);
     const nombreCarpeta = ref("");
     const idPadreCarpeta = ref(null);
-    const primerDirectorioId = ref(null);
+    const pathdirectorio = ref("");
 
+    // Abre el modal
     const mostrarNuevaCarpeta = () => {
-      idPadreCarpeta.value = primerDirectorioId.value;
       mostrarModal.value = true;
     };
 
+    // Cierra y resetea modal
     const cerrarModal = () => {
       mostrarModal.value = false;
       nombreCarpeta.value = "";
-      idPadreCarpeta.value = null;
     };
 
+    // Crea nueva carpeta en el directorio activo
     const crearCarpeta = async () => {
       if (!nombreCarpeta.value.trim()) {
-        alert("El nombre de la carpeta no puede estar vacío.");
-        return;
+        return alert("El nombre de la carpeta no puede estar vacío.");
       }
-
-      if (!idPadreCarpeta.value) {
-        alert("No se especificó el directorio padre.");
-        return;
+      if (!idPadreCarpeta.value || !pathdirectorio.value) {
+        return alert("No se especificó el directorio padre o el path está vacío.");
       }
-
-      const nuevaRuta = `${idPadreCarpeta.value}/${nombreCarpeta.value}`;
+      const basePath = pathdirectorio.value.replace(/\/+$/, "");
+      const nuevaRuta = `${basePath}/${nombreCarpeta.value}`;
 
       try {
-        const response = await apiClient.post("/directories", {
+        const res = await apiClient.post("/directories", {
           path: nuevaRuta,
           isRoot: false,
           parentDirectory: idPadreCarpeta.value,
         });
-
-        if (response.status === 201) {
+        if (res.status === 201) {
           alert("Carpeta creada exitosamente.");
-          const nuevoPrimerId = await cargarTodosLosDirectorios();
-          primerDirectorioId.value = nuevoPrimerId;
+          // Solo actualizamos la ruta limpia
+          pathdirectorio.value = basePath;
         }
-
         cerrarModal();
-      } catch (error) {
-        console.error("Error al crear la carpeta:", error);
+      } catch (err) {
+        console.error("Error al crear la carpeta:", err);
         alert("Error al crear la carpeta.");
       }
     };
 
+    // Inicializa con el primer directorio disponible
     onMounted(async () => {
-      const primerId = await cargarTodosLosDirectorios();
-      primerDirectorioId.value = primerId;
+      const primero = await cargarTodosLosDirectorios();
+      if (primero) {
+        idPadreCarpeta.value = primero.id;
+        pathdirectorio.value = primero.path.replace(/\/+$/, "");
+      }
     });
+    const directorioActivo = ref({ id: null, path: '' });
+    // Se dispara desde los hijos cuando varía el directorio
+    const actualizarDirectorioActivo = ({ id, path }) => {
+      idPadreCarpeta.value = id;
+      pathdirectorio.value = path.replace(/\/+$/, "");
+      console.log("📁 Directorio activo actualizado:", id, pathdirectorio.value);
+      console.log("🧭 Nuevo directorio activo:", id, path);
+      directorioActivo.value = { id, path };
+    };
 
     return {
       vistaActual,
@@ -142,26 +157,23 @@ export default {
       ventana_agregar,
       togglePopup,
       cerrar_ventana,
+      fileInput,
       subirArchivo,
       manejarArchivo,
-      fileInput,
       mostrarModal,
       nombreCarpeta,
       mostrarNuevaCarpeta,
       cerrarModal,
       crearCarpeta,
+      actualizarDirectorioActivo
     };
   },
   methods: {
-    irHome() {
-      this.$router.push('/homepage');
-    },
     signOut() {
-      const authStore = useAuthStore();
-      authStore.logout();
+      useAuthStore().logout();
       this.$router.push('/login');
-    },
-  },
+    }
+  }
 };
 </script>
 

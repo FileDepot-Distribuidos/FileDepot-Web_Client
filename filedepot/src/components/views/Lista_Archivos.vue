@@ -10,7 +10,8 @@
           <p>Tamaño</p>
         </div>
         <Archivo_view :idDirectorio="directorioActualId" />
-        <Carpeta_view :idDirectorio="directorioActualId" />
+        <Carpeta_view :idDirectorio="directorioActualId"
+        @directorio-cambiado="actualizarDirectorioActivo"/>
       </div>
       </div>
       <div v-if="ventana_opciones" class="opciones" @click.stop>

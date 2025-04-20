@@ -34,9 +34,10 @@ export const cargarCarpetas = async (idDirectorio) => {
     const data = Array.isArray(res.data) ? res.data : res.data.folders;
 
     console.log('Carpetas:', data);
+    // Imprimir el path de cada carpeta
+    data.forEach(carpeta => console.log(`Carpeta ID ${carpeta.idDIRECTORY}: path = ${carpeta.path}`));
 
     carpetas.value = data;
-    
   } catch (error) {
     console.error('Error al cargar carpetas:', error);
   }
@@ -53,8 +54,13 @@ export const cargarTodosLosDirectorios = async () => {
 
     const primerDirectorio = data[0]?.idDIRECTORY;
     console.log("Primer ID de directorio:", primerDirectorio);
+    const pathDirectorio = data[0]?.path;
+    console.log("Primer path:", pathDirectorio)
 
-    return primerDirectorio;
+    return {
+      id: primerDirectorio,
+      path: pathDirectorio
+    };
 
   } catch (error) {
     console.error('Error al cargar todos los directorios:', error);
