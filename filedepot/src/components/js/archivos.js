@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import apiClient from '@/api/api.js';
 import { useToast } from 'vue-toastification';
-import { directorioActualId } from '@/components/js/directorio_actual.js';
+import { directorioActualId } from '@/components/js/principalViewLogic';
 
 export const archivos = ref([]);
 export const ventana_agregar = ref(false);
@@ -115,16 +115,29 @@ export const eliminarArchivo = async (idFILE) => {
 
 export const actualizarNombreArchivo = async (idFILE, newName) => {
   try {
-    await apiClient.put('/rename', {
-      oldFileName: idFILE,
+    const archivo = archivos.value.find(a => a.idFILE === idFILE);
+    if (!archivo) {
+      console.error('Archivo no encontrado');
+      return;
+    }
+
+    await apiClient.put('/files/rename', {
+      fileID: idFILE,
+      oldFileName: archivo.name,
       newFileName: newName,
-    });
-    await cargarArchivos();
+    }).then;
+
+    toast.success('Archivo renombrado correctamente', { timeout: 2000 });
+    console.log('DIR ACTUAL:', directorioActualId.value);
+    await cargarArchivos(directorioActualId.value);
     cerrar_ventana();
   } catch (error) {
     console.error('Error al renombrar archivo:', error);
+    toast.error('Error al renombrar el archivo', { timeout: 2000 });
+    cerrar_ventana();
   }
 };
+
 
 export const compartirArchivo = async (idFILE, email) => {
   try {

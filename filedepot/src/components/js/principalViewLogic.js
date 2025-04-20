@@ -2,8 +2,10 @@ import { ref, watch } from 'vue';
 import { cargarTodosLosDirectorios } from '@/components/js/carpetas.js'; // Asegúrate de tener la ruta correcta
 
 const vistaActual = ref('principal');
+
 export const directorioActualId = ref(null);
 export const directorioActualPath = ref(null); // Nuevo
+
 
 watch(directorioActualId, (nuevoValor) => {
   console.log('📁 Cambió directorio actual a:', nuevoValor);
