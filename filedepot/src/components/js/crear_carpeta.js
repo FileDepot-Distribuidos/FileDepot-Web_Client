@@ -1,9 +1,13 @@
 import { ref } from "vue";
 import apiClient from "@/api/api"; // Axios
+import { useToast } from 'vue-toastification';
+import { cargarCarpetas, toast } from "./carpetas";
+import { directorioActualId } from "@/components/js/principalViewLogic";
 
 const mostrarModal = ref(false);
 const nombreCarpeta = ref("");
 export const directorioActualId = ref(null); // Nuevo: para guardar el ID del directorio padre
+const useToast = useToast();
 
 const mostrarNuevaCarpeta = (directorioActualId) => {
   idPadreCarpeta.value = directorioActualId;
@@ -33,17 +37,17 @@ const crearCarpeta = async () => {
     const response = await apiClient.post("/directories", {
       path: nuevaRuta,
       isRoot: false,
-      parentDirectory: idPadreCarpeta ,  // Asegúrate de que esto sea lo que espera la API
+      parentDirectory: idPadreCarpeta ,
     });
 
     if (response.status === 201) {
-      alert("Carpeta creada exitosamente.");
+      toast.success("Carpeta creada exitosamente.", { timeout: 3500 });
+      cargarCarpetas(directorioActualId.value);
     }
-
     cerrarModal();
   } catch (error) {
     console.error("Error al crear la carpeta:", error);
-    alert("Error al crear la carpeta.");
+    toast.error("Error al crear la carpeta.", { timeout: 3500 });
   }
 };
 

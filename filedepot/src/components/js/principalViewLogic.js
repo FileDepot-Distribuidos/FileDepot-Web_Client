@@ -3,7 +3,7 @@ import { cargarTodosLosDirectorios } from '@/components/js/carpetas.js'; // Aseg
 
 const vistaActual = ref('principal');
 
-export const directorioActualId = ref(null);
+export const directorioActualId = ref(0);
 export const directorioActualPath = ref(null); // Nuevo
 
 

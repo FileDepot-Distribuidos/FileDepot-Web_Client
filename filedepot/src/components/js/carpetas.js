@@ -88,8 +88,8 @@ export const eliminarCarpeta = async (idDIRECTORY) => {
     await apiClient.delete('/directories', {
       data: { directoryID: idDIRECTORY },
     });
-    await cargarCarpetas(directorioActualId.value);
     toast.success('Carpeta eliminada correctamente', { timeout: 2000 });
+    await cargarCarpetas(directorioActualId.value);
     cerrar_ventana_carpetas();
   } catch (error) {
     console.error('Error al eliminar carpeta:', error);

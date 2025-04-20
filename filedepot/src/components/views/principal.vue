@@ -72,7 +72,8 @@ import apiClient from "@/api/api";
 import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
 import { ventana_agregar, togglePopup, cerrar_ventana } from '../js/archivos';
 import { fileInput, subirArchivo, manejarArchivo } from '@/components/js/subir_archivo';
-import { cargarTodosLosDirectorios } from '@/components/js/carpetas';
+import { cargarTodosLosDirectorios, cargarCarpetas } from '@/components/js/carpetas';
+import { useToast } from 'vue-toastification';
 
 import ListaArchivos from '@/components/views/Lista_Archivos.vue';
 import ArchivosCompartidos from '@/components/views/Archivos_Compartidos.vue';
@@ -92,6 +93,7 @@ export default {
     const nombreCarpeta = ref("");
     const idPadreCarpeta = ref(null);
     const pathdirectorio = ref("");
+    const toast = useToast();
 
     // Abre el modal
     const mostrarNuevaCarpeta = () => {
@@ -107,10 +109,10 @@ export default {
     // Crea nueva carpeta en el directorio activo
     const crearCarpeta = async () => {
       if (!nombreCarpeta.value.trim()) {
-        return alert("El nombre de la carpeta no puede estar vacío.");
+        return toast.warning("El nombre de la carpeta no puede estar vacío.");
       }
       if (!idPadreCarpeta.value || !pathdirectorio.value) {
-        return alert("No se especificó el directorio padre o el path está vacío.");
+        return toast.warning("No se especificó el directorio padre o el path está vacío.");
       }
       const basePath = pathdirectorio.value.replace(/\/+$/, "");
       const nuevaRuta = `${basePath}/${nombreCarpeta.value}`;
@@ -122,14 +124,15 @@ export default {
           parentDirectory: idPadreCarpeta.value,
         });
         if (res.status === 201) {
-          alert("Carpeta creada exitosamente.");
+          toast.success("Carpeta creada exitosamente.", { timeout: 2000 });
+          await cargarCarpetas(idPadreCarpeta.value);
           // Solo actualizamos la ruta limpia
           pathdirectorio.value = basePath;
         }
         cerrarModal();
       } catch (err) {
         console.error("Error al crear la carpeta:", err);
-        alert("Error al crear la carpeta.");
+        toast.error("Error al crear la carpeta.", { timeout: 2000 });
       }
     };
 
@@ -165,7 +168,9 @@ export default {
       mostrarNuevaCarpeta,
       cerrarModal,
       crearCarpeta,
-      actualizarDirectorioActivo
+      actualizarDirectorioActivo,
+      cargarTodosLosDirectorios,
+      cargarCarpetas
     };
   },
   methods: {
