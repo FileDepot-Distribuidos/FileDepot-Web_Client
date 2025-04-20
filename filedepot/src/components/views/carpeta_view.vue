@@ -5,7 +5,7 @@
       v-for="carpeta in carpetas"
       :key="carpeta.idDIRECTORY"
     >
-      <p @click="cambiarVista('archivos_carpeta', carpeta.idDIRECTORY)">
+      <p @click="abrirCarpeta(carpeta)">
         <i class="pi pi-folder" style="margin-right: 8px;"></i>
         {{ carpeta.path.split('/').pop() }}
       </p>
@@ -105,7 +105,7 @@ export default {
       default: null,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const emailCompartir = ref('');
 
     const handleCompartir = async () => {
@@ -124,8 +124,11 @@ export default {
       }
     };
 
-    const abrirCarpeta = (id) => {
-      console.log('Abrir carpeta', id);
+    const abrirCarpeta = (carpeta) => {
+      console.log('📁 ID carpeta:', carpeta.idDIRECTORY);
+      console.log('📂 Path carpeta:', carpeta.path);
+      cambiarVista('archivos_carpeta', carpeta.idDIRECTORY);
+      emit('directorio-cambiado', { id: carpeta.idDIRECTORY, path: carpeta.path });
     };
 
     const abrirVentanaRenombrar = (carpeta) =>
@@ -153,7 +156,6 @@ export default {
 
     const cerrarVentana = () => cerrar_ventana_carpetas();
 
-    // Reacciona cuando cambia el ID del directorio actual
     watch(
       () => props.idDirectorio,
       (nuevoId) => {

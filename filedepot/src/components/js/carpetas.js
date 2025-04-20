@@ -50,9 +50,9 @@ export const cargarTodosLosDirectorios = async () => {
     console.log('Todos los directorios del usuario:', data);
     console.log("Primer objeto en la lista:", data[0]);
 
-    const primerDirectorio = data[1]?.idDIRECTORY;
+    const primerDirectorio = data[0]?.idDIRECTORY;
     console.log("Primer ID de directorio:", primerDirectorio);
-    const pathDirectorio = data[1]?.path;
+    const pathDirectorio = data[0]?.path;
     console.log("Primer path:", pathDirectorio)
 
     return {
