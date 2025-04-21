@@ -74,7 +74,8 @@ import { ventana_agregar, togglePopup, cerrar_ventana } from '../js/archivos';
 import { fileInput, subirArchivo, manejarArchivo } from '@/components/js/subir_archivo';
 import { cargarTodosLosDirectorios, cargarCarpetas } from '@/components/js/carpetas';
 import { useToast } from 'vue-toastification';
-import { directorioActualId } from '@/components/js/directorio_actual';
+import { directorioActualId, directorioActualPath } from '@/components/js/principalViewLogic';
+
 
 import ListaArchivos from '@/components/views/Lista_Archivos.vue';
 import ArchivosCompartidos from '@/components/views/Archivos_Compartidos.vue';
@@ -112,11 +113,17 @@ export default {
       if (!nombreCarpeta.value.trim()) {
         return toast.warning("El nombre de la carpeta no puede estar vacío.");
       }
+
       if (!idPadreCarpeta.value || !pathdirectorio.value) {
         return toast.warning("No se especificó el directorio padre o el path está vacío.");
       }
+
       const basePath = pathdirectorio.value.replace(/\/+$/, "");
       const nuevaRuta = `${basePath}/${nombreCarpeta.value}`;
+
+      console.log("📁 Creando carpeta...");
+      console.log("🧭 parentDirectory:", idPadreCarpeta.value);
+      console.log("📂 path completo:", nuevaRuta);
 
       try {
         const res = await apiClient.post("/directories", {
@@ -124,12 +131,13 @@ export default {
           isRoot: false,
           parentDirectory: idPadreCarpeta.value,
         });
+
         if (res.status === 201) {
           toast.success("Carpeta creada exitosamente.", { timeout: 2000 });
           await cargarCarpetas(idPadreCarpeta.value);
-          // Solo actualizamos la ruta limpia
           pathdirectorio.value = basePath;
         }
+
         cerrarModal();
       } catch (err) {
         console.error("Error al crear la carpeta:", err);
@@ -144,18 +152,23 @@ export default {
         idPadreCarpeta.value = primero.id;
         pathdirectorio.value = primero.path.replace(/\/+$/, "");
         directorioActualId.value = primero.id;
-        console.log("directorioActualId seteado desde onMounted:", directorioActualId.value);
+        directorioActualPath.value = primero.path; // ✅ sincronizar path global
+        console.log("✅ directorioActualId seteado desde onMounted:", directorioActualId.value);
       }
     });
+
     const directorioActivo = ref({ id: null, path: '' });
-    // Se dispara desde los hijos cuando varía el directorio
+
+    // Se actualiza cuando cambia el directorio activo
     const actualizarDirectorioActivo = ({ id, path }) => {
       idPadreCarpeta.value = id;
       pathdirectorio.value = path.replace(/\/+$/, "");
+      directorioActualId.value = id;
+      directorioActualPath.value = path; // ✅ sincronizar path global
+      directorioActivo.value = { id, path };
+
       console.log("📁 Directorio activo actualizado:", id, pathdirectorio.value);
       console.log("🧭 Nuevo directorio activo:", id, path);
-      directorioActivo.value = { id, path };
-      directorioActualId.value = id;
     };
 
     return {

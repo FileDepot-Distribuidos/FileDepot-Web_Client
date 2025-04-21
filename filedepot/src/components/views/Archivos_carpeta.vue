@@ -44,13 +44,13 @@
     </div>
   </template>
   
-  <script>
- import { ventana_opciones, togglePopup, cerrar_ventana } from '../js/archivos';
+<script>
+import { ventana_opciones, togglePopup, cerrar_ventana } from '../js/archivos';
 import Archivo_view from './archivo_view.vue';
 import Carpeta_view from './carpeta_view.vue';
-import { directorioActualId } from '@/components/js/principalViewLogic';
+import { directorioActualId, directorioActualPath } from '@/components/js/principalViewLogic';
 import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
-
+import { ref, onMounted } from 'vue';
 
 export default {
   name: "archivos_carpeta",
@@ -58,8 +58,27 @@ export default {
     Archivo_view,
     Carpeta_view
   },
-  setup() {
-    console.log("📁 Directorio actual ID:", directorioActualId.value);
+  setup(_, { emit }) {
+    const directorioActualLocal = ref(directorioActualId.value);
+
+    onMounted(() => {
+      directorioActualLocal.value = directorioActualId.value;
+
+      console.log("📁 Directorio actual ID (local):", directorioActualLocal.value);
+      console.log("🛤️ Path directorio actual:", directorioActualPath.value);
+
+      // 🔁 Emitimos el cambio para que el padre (PrincipalView.vue) lo escuche
+      emit('directorio-cambiado', {
+        id: directorioActualLocal.value,
+        path: directorioActualPath.value ?? ''
+      });
+
+      console.log("📤 Evento emitido → directorio-cambiado:", {
+        id: directorioActualLocal.value,
+        path: directorioActualPath.value ?? ''
+      });
+    });
+
     return {
       ventana_opciones,
       togglePopup,
@@ -70,9 +89,8 @@ export default {
     };
   },
 };
+</script>
 
-  </script>
-  
-  <style>
-  @import url('../style/lista.css');
-  </style>
+<style>
+@import url('../style/lista.css');
+</style>

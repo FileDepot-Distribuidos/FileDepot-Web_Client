@@ -2,7 +2,8 @@ import { ref } from "vue";
 import apiClient from "@/api/api";
 import { useToast } from 'vue-toastification';
 import { cargarArchivos } from "@/components/js/archivos";
-import { directorioActualId } from "@/components/js/directorio_actual";
+// import { directorioActualId } from "@/components/js/directorio_actual";
+import { directorioActualId } from '@/components/js/principalViewLogic';
 
 const fileInput = ref(null);
 const toast = useToast();
