@@ -14,7 +14,7 @@
           <h4 class="text">Nuevo</h4>
         </div>
         <ul>
-          <li @click="cambiarVista('principal')"><i class="pi pi-home"></i> Principal</li>
+          <li @click="cambiarVista('principal', 0)"><i class="pi pi-home"></i> Principal</li>
           <li @click="cambiarVista('compartidos')"><i class="pi pi-users"></i> Compartidos</li>
           <li @click="cambiarVista('almacenamiento')"><i class="pi pi-cloud"></i> Almacenamiento</li>
           <li @click="signOut"><i class="pi pi-sign-out"></i> Cerrar sesión</li>

@@ -50,7 +50,7 @@ import { ventana_opciones, togglePopup, cerrar_ventana } from '../js/archivos';
 import Archivo_view from './archivo_view.vue';
 import Carpeta_view from './carpeta_view.vue';
 import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
-import { directorioActualId } from '../js/directorio_actual';
+import { directorioActualId } from '../js/principalViewLogic';
 
 export default {
   name: "ListaArchivos",

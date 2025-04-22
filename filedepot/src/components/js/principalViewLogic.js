@@ -11,7 +11,7 @@ watch(directorioActualId, (nuevoValor) => {
   console.log('📁 Cambió directorio actual a:', nuevoValor);
 });
 
-const cambiarVista = async (vista, id = null) => {
+const cambiarVista = async (vista, id = 0) => {
   vistaActual.value = vista;
   directorioActualId.value = id;
 
