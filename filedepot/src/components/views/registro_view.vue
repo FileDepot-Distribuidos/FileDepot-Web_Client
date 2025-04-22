@@ -46,9 +46,8 @@ export default {
         password: password.value,
         phone: phone.value
       }).then((response) => {
-        console.log('Registro exitoso:', response.data);
+        console.log(response.data);
         toast.success('Registro exitoso. Ahora inicia sesión.');
-
         email.value = '';
         password.value = '';
         phone.value = '';

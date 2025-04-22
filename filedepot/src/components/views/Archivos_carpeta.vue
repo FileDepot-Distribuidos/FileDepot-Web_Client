@@ -64,8 +64,8 @@ export default {
     onMounted(() => {
       directorioActualLocal.value = directorioActualId.value;
 
-      console.log("📁 Directorio actual ID (local):", directorioActualLocal.value);
-      console.log("🛤️ Path directorio actual:", directorioActualPath.value);
+      // console.log("📁 Directorio actual ID (local):", directorioActualLocal.value);
+      // console.log("🛤️ Path directorio actual:", directorioActualPath.value);
 
       // 🔁 Emitimos el cambio para que el padre (PrincipalView.vue) lo escuche
       emit('directorio-cambiado', {
@@ -73,10 +73,10 @@ export default {
         path: directorioActualPath.value ?? ''
       });
 
-      console.log("📤 Evento emitido → directorio-cambiado:", {
-        id: directorioActualLocal.value,
-        path: directorioActualPath.value ?? ''
-      });
+      // console.log("📤 Evento emitido → directorio-cambiado:", {
+      //   id: directorioActualLocal.value,
+      //   path: directorioActualPath.value ?? ''
+      // });
     });
 
     return {

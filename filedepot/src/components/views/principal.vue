@@ -110,31 +110,33 @@ export default {
 
     // Crea nueva carpeta en el directorio activo
     const crearCarpeta = async () => {
+
       if (!nombreCarpeta.value.trim()) {
         return toast.warning("El nombre de la carpeta no puede estar vacío.");
       }
 
-      if (!idPadreCarpeta.value || !pathdirectorio.value) {
+      if (!directorioActualId.value || !directorioActualPath.value) {
         return toast.warning("No se especificó el directorio padre o el path está vacío.");
       }
 
-      const basePath = pathdirectorio.value.replace(/\/+$/, "");
+      const basePath = directorioActualPath.value.replace(/\/+$/, "");
+      
       const nuevaRuta = `${basePath}/${nombreCarpeta.value}`;
 
       console.log("📁 Creando carpeta...");
-      console.log("🧭 parentDirectory:", idPadreCarpeta.value);
+      console.log("🧭 parentDirectory:", directorioActualId.value);
       console.log("📂 path completo:", nuevaRuta);
 
       try {
         const res = await apiClient.post("/directories", {
           path: nuevaRuta,
           isRoot: false,
-          parentDirectory: idPadreCarpeta.value,
+          parentDirectory: directorioActualId.value,
         });
 
         if (res.status === 201) {
           toast.success("Carpeta creada exitosamente.", { timeout: 2000 });
-          await cargarCarpetas(idPadreCarpeta.value);
+          await cargarCarpetas(directorioActualId.value);
           pathdirectorio.value = basePath;
         }
 
@@ -153,7 +155,6 @@ export default {
         pathdirectorio.value = primero.path.replace(/\/+$/, "");
         directorioActualId.value = primero.id;
         directorioActualPath.value = primero.path; // ✅ sincronizar path global
-        console.log("✅ directorioActualId seteado desde onMounted:", directorioActualId.value);
       }
     });
 
@@ -167,8 +168,8 @@ export default {
       directorioActualPath.value = path; // ✅ sincronizar path global
       directorioActivo.value = { id, path };
 
-      console.log("📁 Directorio activo actualizado:", id, pathdirectorio.value);
-      console.log("🧭 Nuevo directorio activo:", id, path);
+      // console.log("📁 Directorio activo actualizado:", id, pathdirectorio.value);
+      // console.log("🧭 Nuevo directorio activo:", id, path);
     };
 
     return {

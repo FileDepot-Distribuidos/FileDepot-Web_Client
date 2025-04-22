@@ -1,26 +1,31 @@
 import { ref, watch } from 'vue';
-import { cargarTodosLosDirectorios } from '@/components/js/carpetas.js'; // Asegúrate de tener la ruta correcta
+import { cargarTodosLosDirectorios } from '@/components/js/carpetas';
 
 const vistaActual = ref('principal');
 
 export const directorioActualId = ref(0);
-export const directorioActualPath = ref(null); // Nuevo
+export const directorioActualPath = ref(null);
 
 
 watch(directorioActualId, (nuevoValor) => {
-  console.log('📁 Cambió directorio actual a:', nuevoValor);
+  console.log(nuevoValor);
 });
 
-const cambiarVista = async (vista, id = 0) => {
+const cambiarVista = async (vista, id = 0, path = null) => {
+
+  if (id === 0) {
+    const parent = await cargarTodosLosDirectorios();    
+    id = parent.id;
+    path = parent.path;
+  }
+
   vistaActual.value = vista;
   directorioActualId.value = id;
-
-  // Obtener el path del directorio usando la función ya existente
+  
   if (id !== null) {
-    const resultado = await cargarTodosLosDirectorios({ id });
-    if (resultado?.path) {
-      directorioActualPath.value = resultado.path;
-      console.log('📂 Path del directorio actual:', resultado.path);
+
+    if (path !== null) {
+      directorioActualPath.value = path;
     } else {
       directorioActualPath.value = null;
     }

@@ -16,7 +16,6 @@
       <i
         class="pi pi-ellipsis-v"
         @click.stop="() => {
-          console.log('Abriendo opciones para', carpeta.idDIRECTORY);
           togglePopupCarpeta('opciones', carpeta.idDIRECTORY);
         }"
       />
@@ -125,9 +124,9 @@ export default {
     };
 
     const abrirCarpeta = (carpeta) => {
-      console.log('📁 ID carpeta:', carpeta.idDIRECTORY);
-      console.log('📂 Path carpeta:', carpeta.path);
-      cambiarVista('archivos_carpeta', carpeta.idDIRECTORY);
+      // console.log('📁 ID carpeta:', carpeta.idDIRECTORY);
+      // console.log('📂 Path carpeta:', carpeta.path);
+      cambiarVista('archivos_carpeta', carpeta.idDIRECTORY, carpeta.path);
       emit('directorio-cambiado', { id: carpeta.idDIRECTORY, path: carpeta.path });
     };
 
@@ -160,7 +159,6 @@ export default {
     watch(
       () => props.idDirectorio,
       (nuevoId) => {
-        console.log('📁 Cambió el idDirectorio a:', nuevoId);
         cargarCarpetas(nuevoId);
       },
       { immediate: true }

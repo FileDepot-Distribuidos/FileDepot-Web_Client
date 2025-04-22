@@ -60,7 +60,6 @@ const manejarArchivo = (event) => {
   };
   Promise.all(archivosValidos.map(leerArchivo))
   .then((archivosProcesados) => {
-    console.log('🧭 Directorio actual que se envía:', directorioActualId.value);
     return apiClient.post("/files", {
       files: archivosProcesados,
       directoryId: directorioActualId.value, 

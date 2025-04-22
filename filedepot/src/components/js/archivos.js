@@ -128,7 +128,6 @@ export const actualizarNombreArchivo = async (idFILE, newName) => {
     }).then;
 
     toast.success('Archivo renombrado correctamente', { timeout: 2000 });
-    console.log('DIR ACTUAL:', directorioActualId.value);
     await cargarArchivos(directorioActualId.value);
     cerrar_ventana();
   } catch (error) {
