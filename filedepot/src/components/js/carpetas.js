@@ -32,11 +32,6 @@ export const cargarCarpetas = async (idDirectorio) => {
   try {
     const res = await apiClient.get(`/directories/dir/${idDirectorio}`);
     const data = Array.isArray(res.data) ? res.data : res.data.folders;
-
-    console.log('Carpetas:', data);
-    // Imprimir el path de cada carpeta
-    data.forEach(carpeta => console.log(`Carpeta ID ${carpeta.idDIRECTORY}: path = ${carpeta.path}`));
-
     carpetas.value = data;
   } catch (error) {
     console.error('Error al cargar carpetas:', error);
@@ -49,13 +44,8 @@ export const cargarTodosLosDirectorios = async () => {
     
     const data = Array.isArray(res.data) ? res.data : res.data.folders;
 
-    console.log('Todos los directorios del usuario:', data);
-    console.log("Primer objeto en la lista:", data[0]);
-
     const primerDirectorio = data[0]?.idDIRECTORY;
-    console.log("Primer ID de directorio:", primerDirectorio);
     const pathDirectorio = data[0]?.path;
-    console.log("Primer path:", pathDirectorio)
 
     return {
       id: primerDirectorio,
@@ -67,29 +57,13 @@ export const cargarTodosLosDirectorios = async () => {
   }
 };
 
-
-// export const togglePopupCarpeta = (tipo, payload = null) => {
-//   switch (tipo) {
-//     case 'opciones':
-//       carpetaSeleccionadaId.value =
-//         carpetaSeleccionadaId.value === payload ? null : payload;
-//       break;
-//     case 'renombrar':
-//       carpetaParaRenombrar.value = { ...payload };
-//       ventana_renombrar_carpeta.value = true;
-//       carpetaSeleccionadaId.value = null;
-//       break;
-//   }
-// };
-
-
 export const eliminarCarpeta = async (idDIRECTORY) => {
   try {
     await apiClient.delete('/directories', {
       data: { directoryID: idDIRECTORY },
     });
-    await cargarCarpetas(directorioActualId.value);
     toast.success('Carpeta eliminada correctamente', { timeout: 2000 });
+    await cargarCarpetas(directorioActualId.value);
     cerrar_ventana_carpetas();
   } catch (error) {
     console.error('Error al eliminar carpeta:', error);
@@ -101,8 +75,6 @@ export const eliminarCarpeta = async (idDIRECTORY) => {
 export const actualizarNombreCarpeta = async (idDIRECTORY, newName) => {
   try {
     
-    console.log('Renombrando carpeta:', idDIRECTORY, 'a', newName);
-
     await apiClient.put('/directories/rename', {
       directoryID: idDIRECTORY,
       newName: newName,

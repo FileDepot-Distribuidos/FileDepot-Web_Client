@@ -61,7 +61,7 @@
     cargarArchivosCompartidos,
     descargarArchivo as descargarArchivoDesdeJS,
   } from '../js/archivos.js';
-  import { directorioActualId } from '../js/directorio_actual';
+  import { directorioActualId } from '../js/principalViewLogic.js';
 
   import { onMounted, watch } from 'vue';
   

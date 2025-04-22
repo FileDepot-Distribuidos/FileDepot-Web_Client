@@ -2,7 +2,8 @@ import { ref } from "vue";
 import apiClient from "@/api/api";
 import { useToast } from 'vue-toastification';
 import { cargarArchivos } from "@/components/js/archivos";
-import { directorioActualId } from "@/components/js/directorio_actual";
+// import { directorioActualId } from "@/components/js/directorio_actual";
+import { directorioActualId } from '@/components/js/principalViewLogic';
 
 const fileInput = ref(null);
 const toast = useToast();
@@ -57,11 +58,13 @@ const manejarArchivo = (event) => {
       reader.readAsDataURL(archivo);
     });
   };
-
   Promise.all(archivosValidos.map(leerArchivo))
-    .then((archivosProcesados) => {
-      return apiClient.post("/files", { files: archivosProcesados });
-    })
+  .then((archivosProcesados) => {
+    return apiClient.post("/files", {
+      files: archivosProcesados,
+      directoryId: directorioActualId.value, 
+    });
+  })
     .then((response) => {
       console.log(response.data);
       toast.success("Archivos subidos correctamente", { timeout: 2000 });

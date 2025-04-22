@@ -138,7 +138,7 @@ import {
   leerArchivo as leerArchivoDesdeJS,
 
 } from '../js/archivos.js';
-import { directorioActualId } from '../js/directorio_actual';
+import { directorioActualId } from '../js/principalViewLogic.js';
 // import Carpeta_view from './carpeta_view.vue';
 import {
   carpetas,

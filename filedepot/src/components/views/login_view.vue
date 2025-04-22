@@ -47,7 +47,7 @@ export default {
 
       } catch (error) {
         console.error('Error en login:', error);
-        alert('Error al iniciar sesión');
+        toast.error('Error al iniciar sesión');
       }
     };
 
