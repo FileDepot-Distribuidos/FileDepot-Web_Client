@@ -3,8 +3,8 @@ import { useAuthStore } from '@/stores/authStore';
 import { useToast } from 'vue-toastification';
 
 
-const host = import.meta.env.VITE_API_HOST;
-const port = import.meta.env.VITE_API_PORT;
+const host = process.env.VUE_APP_API_HOST;
+const port = process.env.VUE_APP_API_PORT;
 
 const apiClient = axios.create({
   baseURL: `http://${host}:${port}/api`,
