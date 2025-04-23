@@ -17,43 +17,13 @@
         </div>
 
         <!-- Componente usado correctamente -->
-        <Archivo_view @actualizarTotal="actualizarTotal" />
-      </div>
-    </div>
-
-    <div v-if="ventana_opciones" class="opciones" @click.stop>
-      <div class="conte">
-        <p @click="crearCarpeta">
-          <i class="pi pi-eye" style="margin-right: 8px;"></i>
-          Ver archivo
-        </p>
-        <p @click="subirArchivo">
-          <i class="pi pi-download" style="margin-right: 8px;"></i>
-          Descargar archivo
-        </p>
-        <p @click="subirArchivo">
-          <i class="pi pi-share-alt" style="margin-right: 8px;"></i>
-          Compartir archivo
-        </p>
-        <p @click="subirArchivo">
-          <i class="pi pi-arrows-alt" style="margin-right: 8px;"></i>
-          Mover archivo
-        </p>
-        <p @click="subirArchivo">
-          <i class="pi pi-file-edit" style="margin-right: 8px;"></i>
-          Cambiar nombre
-        </p>
-        <p @click="subirArchivo">
-          <i class="pi pi-trash" style="margin-right: 8px;"></i>
-          Eliminar archivo
-        </p>
+        <Archivo_view :idDirectorio="null" @actualizarTotal="actualizarTotal" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ventana_opciones, togglePopup, cerrar_ventana } from '../js/archivos';
 import Archivo_view from './archivo_view.vue';
 
 export default {
@@ -64,7 +34,8 @@ export default {
   data() {
     return {
       total:0,
-      limite: 500, // Límite de almacenamiento en MB
+      limite: 1000, // Límite de almacenamiento en MB
+      idActual: null
     };
   },
   computed: {
@@ -79,9 +50,6 @@ export default {
   },
   setup() {
     return {
-      ventana_opciones,
-      togglePopup,
-      cerrar_ventana,
     };
   },
 };
