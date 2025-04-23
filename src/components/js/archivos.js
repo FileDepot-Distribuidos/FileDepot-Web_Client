@@ -49,9 +49,16 @@ export const cerrar_ventana = () => {
   archivoParaMover.value = false;
 };
 
+// src/components/js/archivos.js
+
 export const cargarArchivos = async (idDirectorio) => {
   try {
-    const res = await apiClient.get(`/files/dir/${idDirectorio}`);
+    // Si no hay idDirectorio, usamos el endpoint que lista todos los archivos
+    const endpoint = idDirectorio == null
+      ? '/files'              // <-- todos los archivos
+      : `/files/dir/${idDirectorio}`;
+
+    const res  = await apiClient.get(endpoint);
     const data = Array.isArray(res.data) ? res.data : res.data.files;
 
     archivos.value = data.map((archivo) => {
@@ -67,6 +74,7 @@ export const cargarArchivos = async (idDirectorio) => {
     console.error('Error al cargar archivos:', error);
   }
 };
+
 
 export const cargarArchivosCompartidos = async () => {
   try {
