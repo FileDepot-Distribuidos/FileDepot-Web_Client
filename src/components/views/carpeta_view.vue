@@ -15,16 +15,10 @@
 
       <i
         class="pi pi-ellipsis-v"
-        @click.stop="() => {
-          togglePopupCarpeta('opciones', carpeta.idDIRECTORY);
-        }"
+        @click.stop="togglePopupCarpeta('opciones', carpeta.idDIRECTORY)"
       />
 
-      <div
-        v-if="carpetaSeleccionadaId === carpeta.idDIRECTORY"
-        class="opciones"
-        @click.stop
-      >
+      <div v-if="carpetaSeleccionadaId === carpeta.idDIRECTORY" class="opciones" @click.stop>
         <div class="conte">
           <p @click="abrirVentanaRenombrar(carpeta)">
             <i class="pi pi-file-edit" style="margin-right: 8px;"></i> Cambiar nombre
@@ -34,6 +28,9 @@
           </p>
           <p @click="abrirVentanaCompartir(carpeta)">
             <i class="pi pi-share-alt" style="margin-right: 8px;"></i> Compartir carpeta
+          </p>
+          <p @click="abrirVentanaMover(carpeta)">
+            <i class="pi pi-arrows-alt" style="margin-right: 8px;"></i> Mover archivo
           </p>
         </div>
       </div>
@@ -72,6 +69,35 @@
         </div>
       </div>
     </div>
+    <!-- Modal: Mover archivo -->
+    <div v-if="archivoParaMover" class="mover">
+      <div class="ventana" @click.stop>
+        <h3>Mover archivo</h3>
+        <!-- Scrollable list de carpetas -->
+        <div class="contenedor-carpetas-scroll">
+          <div
+            class="carpeta"
+            v-for="carpeta in carpetas"
+            :key="carpeta.idDIRECTORY"
+            @click="selectedMoveFolder = carpeta"
+            :class="{ selected: selectedMoveFolder && selectedMoveFolder.idDIRECTORY === carpeta.idDIRECTORY }"
+          >
+            <i class="pi pi-folder" style="margin-right: 8px;"></i>
+            {{ carpeta.path.split('/').pop() }}
+          </div>
+        </div>
+        <!-- Botones -->
+        <div class="modal-buttons">
+          <button 
+            :disabled="!selectedMoveFolder" 
+            @click="moverArchivo(archivoParaMover.idFILE, selectedMoveFolder.idDIRECTORY)"
+          >
+            Mover
+          </button>
+          <button @click="cerrarVentana" id="cancelar">Cancelar</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -81,7 +107,6 @@ import {
   eliminarCarpeta,
   actualizarNombreCarpeta,
   carpetaSeleccionadaId,
-  togglePopupCarpeta,
   cerrar_ventana_carpetas,
   ventana_renombrar_carpeta,
   carpetaParaRenombrar,
@@ -89,9 +114,10 @@ import {
   carpetaParaCompartir,
   compartirCarpeta,
   cargarCarpetas,
+  togglePopupCarpeta
 } from '../js/carpetas.js';
 
-import { togglePopup } from '../js/archivos.js';
+
 import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
 
 import { ref, computed, watch, onMounted } from 'vue';
@@ -106,6 +132,7 @@ export default {
   },
   setup(props, { emit }) {
     const emailCompartir = ref('');
+    const selectedMoveFolder = ref(null);
 
     const handleCompartir = async () => {
       if (!emailCompartir.value) {
@@ -140,7 +167,8 @@ export default {
       }
     };
     const abrirVentanaCompartir = (carpeta) =>
-      togglePopupCarpeta('compartir', carpeta);
+    togglePopupCarpeta('compartir', carpeta);
+      
 
     const confirmarRenombrar = () => {
       if (carpetaRenombrar.value) {
@@ -148,6 +176,10 @@ export default {
         actualizarNombreCarpeta(carpetaRenombrar.value.idDIRECTORY, carpetaRenombrar.value.name);
 
       }
+    };
+    const abrirVentanaMover = carpeta => {
+      togglePopupCarpeta('mover', carpeta);
+      selectedMoveFolder.value = null;
     };
 
     const ventanaCompartir = computed(() => ventana_compartir_carpeta.value);
@@ -183,11 +215,11 @@ export default {
       cerrarVentana,
       ventanaRenombrar,
       carpetaRenombrar,
-      togglePopup,
       togglePopupCarpeta,
       ventanaCompartir,
       handleCompartir,
       emailCompartir,
+      abrirVentanaMover,
     };
   },
 };
