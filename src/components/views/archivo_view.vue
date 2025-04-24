@@ -94,13 +94,13 @@
         <div class="contenedor-carpetas-scroll">
           <div
             class="carpeta"
-            v-for="carpeta in carpetas"
+            v-for="carpeta in carpetasParaMover"
             :key="carpeta.idDIRECTORY"
             @click="selectedMoveFolder = carpeta"
             :class="{ selected: selectedMoveFolder && selectedMoveFolder.idDIRECTORY === carpeta.idDIRECTORY }"
           >
             <i class="pi pi-folder" style="margin-right: 8px;"></i>
-            {{ carpeta.path.split('/').pop() }}
+            {{ '/' + carpeta.path.split('/').slice(1).join('/') }}
           </div>
         </div>
         <!-- Botones -->
@@ -143,6 +143,8 @@ import { directorioActualId } from '../js/principalViewLogic.js';
 import {
   carpetas,
   cargarCarpetas,
+  listarTodosLosDirectorios,
+  todasLasCarpetas
 } from '../js/carpetas.js';
 import { ref, onMounted, computed, watch } from 'vue';
 
@@ -153,6 +155,10 @@ export default {
   },
   emits: ['actualizarTotal'],
   setup(props, { emit }) {
+
+    const carpetasParaMover = computed(() =>
+      todasLasCarpetas.value.filter(c => c.idDIRECTORY !== directorioActualId.value)
+    );
 
     const emailCompartir = ref('');
     const selectedMoveFolder = ref(null);
@@ -203,6 +209,7 @@ export default {
     const abrirVentanaMover = archivo => {
       togglePopup('mover', archivo);
       selectedMoveFolder.value = null;
+      listarTodosLosDirectorios();
     };
 
     const ventanaRenombrar = computed(() => ventana_renombrar.value);
@@ -215,7 +222,10 @@ export default {
       }
     };
 
-    const cerrarVentana = () => cerrar_ventana();
+    const cerrarVentana = () => {
+      cerrar_ventana();
+    };
+
     const eliminarArchivoDesdeVista = id => {
       if (confirm('¿Estás seguro de que deseas eliminar este archivo?')) {
         eliminarArchivo(id);
@@ -278,7 +288,10 @@ onMounted(() => {
       carpetas,
       selectedMoveFolder,
       moverArchivo,
-      leerArchivo
+      leerArchivo,
+      carpetasParaMover,
+      todasLasCarpetas,
+      listarTodosLosDirectorios
     };
   }
 };

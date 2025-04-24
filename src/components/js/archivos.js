@@ -2,6 +2,7 @@ import { ref } from 'vue';
 import apiClient from '@/api/api.js';
 import { useToast } from 'vue-toastification';
 import { directorioActualId } from '@/components/js/principalViewLogic';
+// import { log } from 'node:console';
 
 export const archivos = ref([]);
 export const ventana_agregar = ref(false);
@@ -258,21 +259,25 @@ export const leerArchivo = async (fileID) => {
 
 
 //mover archivo
-export const moverArchivo = async (carpeta) => {
-  if (!archivoParaMover.value || !carpeta.idDIRECTORY) return;
+export const moverArchivo = async ( fileID, newDir) => {
+
+  console.log('archivo', fileID);
+  console.log('carpeta', newDir)
+  
+  if (!fileID || !newDir) return;
 
   try {
-    const response = await apiClient.put('/directories/move', {
-      fileID: archivoParaMover.value.idFILE,
-      newDirectoryID: carpeta.idDIRECTORY,
+    const response = await apiClient.put('/files/move', {
+      fileID: fileID,
+      newDirectoryID: newDir,
     });
 
     if (response.status === 200) {
-      alert(`Archivo movido correctamente`);
+      toast.success(`Archivo movido correctamente`);
       cerrar_ventana();
-      cargarArchivos(carpetaSeleccionadaId.value || carpeta.idDIRECTORY); // Actualiza según contexto
+      cargarArchivos(directorioActualId.value);
     } else {
-      alert('No se pudo mover el archivo');
+      toast.error('No se pudo mover el archivo');
     }
   } catch (error) {
     console.error('Error al mover archivo:', error);

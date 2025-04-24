@@ -5,6 +5,7 @@ import { directorioActualId } from '@/components/js/principalViewLogic';
 
 
 export const carpetas = ref([]);
+export const todasLasCarpetas = ref([]);
 export const carpetaSeleccionadaId = ref(null);
 export const ventana_renombrar_carpeta = ref(false);
 export const carpetaParaRenombrar = ref(null);
@@ -56,6 +57,17 @@ export const cargarTodosLosDirectorios = async () => {
     console.error('Error al cargar todos los directorios:', error);
   }
 };
+
+export const listarTodosLosDirectorios = async () => {
+  try {
+    const res = await apiClient.get('/directories');
+    const data = Array.isArray(res.data) ? res.data : res.data.folders;
+    todasLasCarpetas.value = data;
+  } catch (error) {
+    console.error('Error al cargar todos los directorios:', error);
+  }
+};
+
 
 export const eliminarCarpeta = async (idDIRECTORY) => {
   try {
