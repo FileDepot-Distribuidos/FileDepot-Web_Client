@@ -82,6 +82,25 @@ export const listarTodosLosDirectorios = async () => {
   }
 };
 
+export const compartirCarpeta = async (idDIRECTORY, email) => {
+  try {
+    await apiClient.post('/share/directory', {
+      sharedDirectory: idDIRECTORY,
+      sharedWith: email,
+    }).then((response) => {
+      console.log(response.data);
+      toast.success('Carpeta compartida correctamente', { timeout: 2000 });
+      cerrar_ventana_carpetas();
+    }).catch((error) => {
+      console.error('Error al compartir carpeta:', error);
+      toast.error('Error al compartir la carpeta', { timeout: 2000 });
+    });
+  } catch (error) {
+    console.error('Error al compartir carpeta:', error);
+    toast.error('Error al compartir la carpeta', { timeout: 2000 });
+  }
+};
+
 
 export const eliminarCarpeta = async (idDIRECTORY) => {
   try {
