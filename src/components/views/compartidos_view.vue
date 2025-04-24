@@ -23,7 +23,7 @@
   
         <div v-if="archivoSeleccionadoId === archivo.idFILE" class="opciones" @click.stop>
           <div class="conte">
-            <p @click="verArchivo">
+            <p @click="leerArchivo(archivo.idFILE)">
               <i class="pi pi-eye" style="margin-right: 8px;"></i> Ver archivo
             </p>
             <p @click="descargarArchivo(archivo.idFILE)">
@@ -60,6 +60,7 @@
     cerrar_ventana,
     cargarArchivosCompartidos,
     descargarArchivo as descargarArchivoDesdeJS,
+    leerArchivo as leerArchivoDesdeJS,
   } from '../js/archivos.js';
   import { directorioActualId } from '../js/principalViewLogic.js';
 
@@ -99,6 +100,7 @@
       };
   
       const verArchivo = () => console.log('Ver archivo');
+      const leerArchivo = idFILE => leerArchivoDesdeJS(idFILE);
   
       const descargarArchivo = (idFILE) => {
         return descargarArchivoDesdeJS(idFILE);
@@ -125,6 +127,7 @@
         subirArchivo,
         cerrarVentana,
         directorioActualId,
+        leerArchivo,
       };
     },
   };
