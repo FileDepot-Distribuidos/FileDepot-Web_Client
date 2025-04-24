@@ -10,23 +10,37 @@ export const carpetaSeleccionadaId = ref(null);
 export const ventana_renombrar_carpeta = ref(false);
 export const carpetaParaRenombrar = ref(null);
 export const ventana_compartir_carpeta = ref(false);
+export const ventana_mover_carpeta = ref(false);
 export const carpetaParaCompartir = ref(null);
+export const ventana_agregar = ref(true);
 export const toast = useToast();
 
 export const togglePopupCarpeta = (tipo, payload = null) => {
   switch (tipo) {
     case 'opciones':
       carpetaSeleccionadaId.value = carpetaSeleccionadaId.value === payload ? null : payload;
+      ventana_agregar.value = false;
       break;
     case 'renombrar':
       carpetaParaRenombrar.value = { ...payload };
       ventana_renombrar_carpeta.value = true;
+      carpetaSeleccionadaId.value = null;
+      
       break;
     case 'compartir':
       carpetaParaCompartir.value = { ...payload };
       ventana_compartir_carpeta.value = true;
+      carpetaSeleccionadaId.value = null;
       break;
   }
+};
+
+export const cerrar_ventana_carpetas = () => {
+  ventana_agregar.value = false;
+  ventana_compartir_carpeta.value = false;
+  ventana_renombrar_carpeta.value = false;
+  ventana_mover_carpeta.value = false;
+  carpetaSeleccionadaId.value = null;
 };
 
 export const cargarCarpetas = async (idDirectorio) => {
@@ -103,8 +117,3 @@ export const actualizarNombreCarpeta = async (idDIRECTORY, newName) => {
 };
 
 
-export const cerrar_ventana_carpetas = () => {
-  ventana_compartir_carpeta.value = false;
-  ventana_renombrar_carpeta.value = false;
-  carpetaSeleccionadaId.value = null;
-};

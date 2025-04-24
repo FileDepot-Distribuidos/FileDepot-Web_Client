@@ -62,8 +62,8 @@
         <h3>Cambiar nombre del archivo</h3>
         <input type="text" v-model="archivoRenombrar.name" />
         <div class="modal-buttons">
-          <button @click="confirmarRenombrar">Guardar</button>
-          <button @click="cerrarVentana" id="cancelar">Cancelar</button>
+          <button @click="confirmarRenombrar" id="cancelar">Guardar</button>
+          <button @click="cerrarVentana" >Cancelar</button>
         </div>
       </div>
     </div>
@@ -78,8 +78,8 @@
           placeholder="Escribe el correo del usuario"
         />
         <div class="modal-buttons">
-          <button @click="handleCompartir">Compartir</button>
-          <button @click="cerrarVentana" id="cancelar">Cancelar</button>
+          <button @click="handleCompartir" id="cancelar">Compartir</button>
+          <button @click="cerrarVentana" >Cancelar</button>
         </div>
       </div>
     </div>

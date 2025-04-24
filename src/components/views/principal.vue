@@ -57,8 +57,8 @@
         <h3>Nueva carpeta</h3>
         <input type="text" v-model="nombreCarpeta" placeholder="Título" />
         <div class="modal-botones">
-          <button @click="cerrarModal" id="cancelar">Cancelar</button>
-          <button @click="crearCarpeta">Crear</button>
+          <button @click="cerrarModal" >Cancelar</button>
+          <button @click="crearCarpeta" id="cancelar">Crear</button>
         </div>
       </div>
     </div>
@@ -107,6 +107,8 @@ export default {
       mostrarModal.value = false;
       nombreCarpeta.value = "";
     };
+
+    const cerrar = cerrar_ventana;
 
     // Crea nueva carpeta en el directorio activo
     const crearCarpeta = async () => {
@@ -185,6 +187,7 @@ export default {
       nombreCarpeta,
       mostrarNuevaCarpeta,
       cerrarModal,
+      cerrar,
       crearCarpeta,
       actualizarDirectorioActivo,
       cargarTodosLosDirectorios,

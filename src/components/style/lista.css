@@ -168,6 +168,7 @@
   border-bottom: 1px solid #eee;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  width: 300px;
 
 }
 
@@ -180,14 +181,14 @@
 }
 
 .contenedor-carpetas-scroll .carpeta {
-  max-height: 150px; /* Ajusta según cuántos elementos deseas mostrar sin scroll */
+  max-height: 150px; 
   overflow-y: auto;
   padding: 8px;
   border-radius: 8px;
   background-color: #fff;
 }
 
-/* Scroll bonito (opcional) */
+
 .contenedor-carpetas-scroll .carpeta::-webkit-scrollbar {
   width: 6px;
 }

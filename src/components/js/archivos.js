@@ -24,7 +24,6 @@ export const togglePopup = (tipo, payload = null) => {
       break;
     case 'opciones':
       archivoSeleccionadoId.value = archivoSeleccionadoId.value === payload ? null : payload;
-
       ventana_agregar.value = false;
       break;
     case 'renombrar':
@@ -39,6 +38,7 @@ export const togglePopup = (tipo, payload = null) => {
     case 'compartir':
       archivoParaCompartir.value = { ...payload};
       ventana_compartir.value = true;
+      archivoSeleccionadoId.value = null;
   }
 };
 

@@ -6,7 +6,7 @@
                 <h1>Gestiona, almacena y comparte archivos fácilmente con FileDepot</h1>
                 <p>Olvídate de las complicaciones. Con FileDepot, tus archivos están siempre seguros y disponibles en la nube, listos para ser compartidos en segundos.</p>
                 <button class="primary-btn" @click="irLogin">Iniciar sesión</button>
-                <button @click="irRegistro">Registrate</button>
+                <button @click="irRegistro" class="registro">Registrate</button>
             </div>
             <div class="right">
             </div>
