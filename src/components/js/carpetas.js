@@ -53,6 +53,16 @@ export const cargarCarpetas = async (idDirectorio) => {
   }
 };
 
+export const cargarCarpetasCompartidas = async () => {
+  try {
+    const res = await apiClient.get('/share/dirList');
+    const data = Array.isArray(res.data) ? res.data : res.data.folders;
+    carpetas.value = data;
+  } catch (error) {
+    console.error('Error al cargar carpetas:', error);
+  }
+};
+
 export const cargarTodosLosDirectorios = async () => {
   try {
     const res = await apiClient.get('/directories');

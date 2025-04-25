@@ -29,18 +29,6 @@
             <p @click="descargarArchivo(archivo.idFILE)">
               <i class="pi pi-download" style="margin-right: 8px;"></i> Descargar archivo
             </p>
-            <!-- <p @click="abrirVentanaCompartir(archivo)">
-              <i class="pi pi-share-alt" style="margin-right: 8px;"></i> Compartir archivo
-            </p> -->
-            <!-- <p @click="abrirVentanaMover(archivo)">
-              <i class="pi pi-arrows-alt" style="margin-right: 8px;"></i> Mover archivo
-            </p> -->
-            <!-- <p @click="abrirVentanaRenombrar(archivo)">
-              <i class="pi pi-file-edit" style="margin-right: 8px;"></i> Cambiar nombre
-            </p> -->
-            <!-- <p @click="eliminarArchivoDesdeVista(archivo.idFILE)">
-              <i class="pi pi-trash" style="margin-right: 8px;"></i> Eliminar archivo
-            </p> -->
           </div>
         </div>
       </div>
