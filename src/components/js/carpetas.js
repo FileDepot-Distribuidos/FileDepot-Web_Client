@@ -12,7 +12,9 @@ export const carpetaParaRenombrar = ref(null);
 export const ventana_compartir_carpeta = ref(false);
 export const ventana_mover_carpeta = ref(false);
 export const carpetaParaCompartir = ref(null);
+export const carpetaParaMover = ref(null);
 export const ventana_agregar = ref(true);
+
 export const toast = useToast();
 
 export const togglePopupCarpeta = (tipo, payload = null) => {
@@ -25,7 +27,10 @@ export const togglePopupCarpeta = (tipo, payload = null) => {
       carpetaParaRenombrar.value = { ...payload };
       ventana_renombrar_carpeta.value = true;
       carpetaSeleccionadaId.value = null;
-      
+      break;
+    case 'mover':
+      carpetaParaMover.value = { ...payload };
+      carpetaSeleccionadaId.value = null;
       break;
     case 'compartir':
       carpetaParaCompartir.value = { ...payload };
@@ -41,6 +46,7 @@ export const cerrar_ventana_carpetas = () => {
   ventana_renombrar_carpeta.value = false;
   ventana_mover_carpeta.value = false;
   carpetaSeleccionadaId.value = null;
+  carpetaParaMover.value = null;
 };
 
 export const cargarCarpetas = async (idDirectorio) => {
@@ -145,4 +151,26 @@ export const actualizarNombreCarpeta = async (idDIRECTORY, newName) => {
   }
 };
 
+export const moverCarpeta = async (dirID, newDir) => {
+  
+  if (!dirID || !newDir) return;
 
+  try {
+    const response = await apiClient.put('/directoriessss/move', {
+      directoryID: dirID,
+      newDirectoryID: newDir,
+    });
+
+    if (response.status === 200) {
+      toast.success(`Carpeta movida correctamente`);
+      cerrar_ventana_carpetas();
+      cargarCarpetas(directorioActualId.value);
+    } else {
+      toast.error('No se pudo mover el archivo');
+    }
+  } catch (error) {
+    console.error('Error al mover carpeta:', error);
+    toast.error('Ocurrió un error al mover la carpeta');
+    cerrar_ventana_carpetas();
+  }
+};

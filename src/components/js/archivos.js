@@ -260,9 +260,6 @@ export const leerArchivo = async (fileID) => {
 
 //mover archivo
 export const moverArchivo = async ( fileID, newDir) => {
-
-  console.log('archivo', fileID);
-  console.log('carpeta', newDir)
   
   if (!fileID || !newDir) return;
 
@@ -281,7 +278,7 @@ export const moverArchivo = async ( fileID, newDir) => {
     }
   } catch (error) {
     console.error('Error al mover archivo:', error);
-    alert('Ocurrió un error al mover el archivo');
+    toast.error('Ocurrió un error al mover el archivo');
+    cerrar_ventana();
   }
 };
-
