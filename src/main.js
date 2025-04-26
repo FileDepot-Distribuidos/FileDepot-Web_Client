@@ -9,7 +9,6 @@ import 'vue-toastification/dist/index.css';
 
 const app = createApp(App);
 const pinia = createPinia();
-
 app.use(pinia);
 app.use(router);
 app.use(Toast, {
@@ -21,16 +20,25 @@ app.use(Toast, {
   progress: false,
 });
 
-router.beforeEach((to, from, next) => {
-  const auth = useAuthStore();
+const auth = useAuthStore();
 
-  if (to.meta.requiresAuth && !auth.isAuthenticated) {
-    next('/HomePage');
-  } else if ((to.path === '/login' || to.path === '/registro') && auth.isAuthenticated) {
-    next('/');
-  } else {
-    next();
+// No montes hasta saber si está autenticado
+auth.checkAuth().then(() => {
+
+  router.beforeEach((to, from, next) => {
+    if (to.meta.requiresAuth && !auth.isAuthenticated) {
+      next('/login');
+    } else if ((to.path === '/login' || to.path === '/registro') && auth.isAuthenticated) {
+      next('/');
+    } else {
+      next();
+    }
+  });
+
+  // Aquí revisas si ya estás en una ruta protegida
+  if (router.currentRoute.value.meta.requiresAuth && !auth.isAuthenticated) {
+    router.push('/login');
   }
-});
 
-app.mount('#app');
+  app.mount('#app');
+});

@@ -1,20 +1,26 @@
+// stores/authStore.js
 import { defineStore } from 'pinia';
+import apiClient from '@/api/api';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    token: localStorage.getItem('token') || null, // Cargar token desde localStorage si existe
+    authenticated: false, // NUEVO estado
   }),
   actions: {
-    setToken(token) {
-      this.token = token;
-      localStorage.setItem('token', token); // Guardar token en localStorage
+    async checkAuth() {
+      try {
+        await apiClient.get('/auth/validate');
+        this.authenticated = true;
+      } catch (error) {
+        this.authenticated = false;
+      }
     },
-    logout() {
-      this.token = null;
-      localStorage.removeItem('token'); // Eliminar token de localStorage
+    async logout() {
+      await apiClient.post('/auth/logout');
+      this.authenticated = false;
     }
   },
   getters: {
-    isAuthenticated: (state) => !!state.token, // Devuelve true si hay un token
+    isAuthenticated: (state) => state.authenticated
   }
 });
