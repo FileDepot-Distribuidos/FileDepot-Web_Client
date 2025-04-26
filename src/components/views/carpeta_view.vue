@@ -84,8 +84,8 @@
         :class="{ selected: selectedMoveFolder && selectedMoveFolder.idDIRECTORY === carpeta.idDIRECTORY }"
         >
         <i class="pi pi-folder" style="margin-right: 8px;"></i>
-        {{ carpeta.path.split('/').pop() }}
-        </div>
+        {{ '/' + carpeta.path.split('/').slice(1).join('/') }}
+      </div>
       </div>
       <!-- Botones -->
       <div class="modal-buttons">
@@ -118,6 +118,7 @@ import {
   cargarCarpetas,
   togglePopupCarpeta,
   listarTodosLosDirectorios,
+  todasLasCarpetas,
   carpetaParaMover,
   moverCarpeta,
 } from '../js/carpetas.js';
@@ -138,9 +139,10 @@ export default {
   setup(props, { emit }) {
 
     const carpetasParaMover = computed(() =>
-      carpetas.value.filter(c =>
+    todasLasCarpetas.value.filter(c =>
         c.idDIRECTORY !== props.idDirectorio && // excluir carpeta actual
         (!carpetaParaMover.value || c.idDIRECTORY !== carpetaParaMover.value.idDIRECTORY) // excluir la que se desea mover
+        && (!carpetaParaMover.value || !c.path.startsWith(carpetaParaMover.value.path))
       )
     );
 
@@ -238,6 +240,7 @@ export default {
       listarTodosLosDirectorios,
       carpetasParaMover,
       selectedMoveFolder,
+      todasLasCarpetas,
       moverCarpeta
     };
   },

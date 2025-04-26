@@ -156,9 +156,9 @@ export const moverCarpeta = async (dirID, newDir) => {
   if (!dirID || !newDir) return;
 
   try {
-    const response = await apiClient.put('/directoriessss/move', {
+    const response = await apiClient.put('/directories/move', {
       directoryID: dirID,
-      newDirectoryID: newDir,
+      newParentDirectory: newDir,
     });
 
     if (response.status === 200) {
