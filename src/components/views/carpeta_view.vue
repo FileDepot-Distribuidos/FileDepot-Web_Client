@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <div v-if="carpetas.length === 0" class="mensaje-vacio">
+    <div v-if="carpetas && carpetas.length === 0" class="mensaje-vacio">
       <p style="text-align: center; margin-top: 2rem; color: gray;">
         Todavía no hay carpetas
       </p>
