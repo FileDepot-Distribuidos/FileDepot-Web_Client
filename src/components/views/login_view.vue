@@ -31,13 +31,13 @@ export default {
   setup() {
     const email = ref('');
     const password = ref('');
-    const authStore = useAuthStore();
+    const auth = useAuthStore();
     const toast = useToast();
 
     const login = async () => {
       try {
-        const response = await apiClient.post('/auth/login', { email: email.value, password: password.value });
-        authStore.setToken(response.data.token); 
+        await apiClient.post('/auth/login', { email: email.value, password: password.value }, { withCredentials: true });
+        await auth.checkAuth(); // vuelve a preguntar al backend si es válido
 
         toast.success('Inicio de sesión exitoso');
 

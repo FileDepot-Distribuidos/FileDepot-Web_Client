@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useAuthStore } from '@/stores/authStore';
 import apiClient from "@/api/api";
 import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
@@ -112,7 +112,6 @@ export default {
 
     // Crea nueva carpeta en el directorio activo
     const crearCarpeta = async () => {
-
       if (!nombreCarpeta.value.trim()) {
         return toast.warning("El nombre de la carpeta no puede estar vacío.");
       }
@@ -122,7 +121,6 @@ export default {
       }
 
       const basePath = directorioActualPath.value.replace(/\/+$/, "");
-      
       const nuevaRuta = `${basePath}/${nombreCarpeta.value}`;
 
       console.log("📁 Creando carpeta...");
@@ -156,9 +154,43 @@ export default {
         idPadreCarpeta.value = primero.id;
         pathdirectorio.value = primero.path.replace(/\/+$/, "");
         directorioActualId.value = primero.id;
-        directorioActualPath.value = primero.path; // ✅ sincronizar path global
+        directorioActualPath.value = primero.path;
+      }
+
+      // Cuando presionas recargar (o F5), antes de recargar la página, marca en sessionStorage
+      window.addEventListener('beforeunload', (event) => {
+        console.log(event);
+        
+        sessionStorage.setItem('isPageReloaded', 'true');
+      });
+
+      // Cuando la página ya se recargó, limpia esa marca
+      if (sessionStorage.getItem('isPageReloaded') === 'true') {
+        sessionStorage.removeItem('isPageReloaded');
+      } else {
+        // Si no hay marca, es un cierre real de pestaña o ventana
+        window.addEventListener('unload', logoutOnClose);
       }
     });
+
+
+    // Limpiar el evento cuando el componente se destruye
+    onBeforeUnmount(() => {
+      window.removeEventListener('unload', logoutOnClose);
+    });
+
+
+    const logoutOnClose = async () => {
+      if (sessionStorage.getItem('isPageReloaded') !== 'true') {
+        try {
+          const auth = useAuthStore();
+          await apiClient.post("/auth/logout");
+          auth.authenticated = false; // Actualiza el estado de autenticación
+        } catch (error) {
+          console.error('Error al cerrar sesión:', error);
+        }
+      }
+    };
 
     const directorioActivo = ref({ id: null, path: '' });
 
@@ -169,9 +201,6 @@ export default {
       directorioActualId.value = id;
       directorioActualPath.value = path; // ✅ sincronizar path global
       directorioActivo.value = { id, path };
-
-      // console.log("📁 Directorio activo actualizado:", id, pathdirectorio.value);
-      // console.log("🧭 Nuevo directorio activo:", id, path);
     };
 
     return {
@@ -195,8 +224,9 @@ export default {
     };
   },
   methods: {
-    signOut() {
-      useAuthStore().logout();
+    async signOut() {
+      const auth = useAuthStore();
+      await auth.logout();
       this.$router.push('/login');
     }
   }
