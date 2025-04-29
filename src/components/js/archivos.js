@@ -63,11 +63,11 @@ export const cargarArchivos = async (idDirectorio) => {
     const data = Array.isArray(res.data) ? res.data : res.data.files;
 
     archivos.value = data.map((archivo) => {
-      const sizeMB = archivo.size / (1024 * 1024);
+      const sizeMB = archivo.bytes / (1024 * 1024);
       return {
         ...archivo,
         parsedSize: sizeMB < 1
-          ? `${(archivo.size / 1024).toFixed(0)} KB`
+          ? `${(archivo.bytes / 1024).toFixed(0)} KB`
           : `${sizeMB.toFixed(2)} MB`
       };
     });
