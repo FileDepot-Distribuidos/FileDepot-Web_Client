@@ -1,0 +1,62 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+.contain {
+    min-height: 91vh;
+    background-color: #f5f5f5;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+.conten {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px;
+    height: 91vh;
+}
+
+.left {
+    width: 45%;
+}
+
+h1 {
+    font-size: 3rem;
+    color: #202124;
+}
+
+p {
+    color: #5f6368;
+    font-size: 1.2rem;
+}
+
+.button {
+    margin-top: 20px;
+}
+
+button {
+    margin-right: 10px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.primary-btn {
+    background-color: #012E40;
+    color: white;
+}
+.registro{
+    background-color: #a3a8aa;
+}
+
+.right img {
+    width: 500px;
+}
+
+@media screen and (min-width: 1920px) {
+    .contain{
+        min-height: 100vh;
+    }
+}
