@@ -14,7 +14,7 @@
         <p>—</p>
       </div>
   
-      <div v-if="carpetas.length === 0" class="mensaje-vacio">
+      <div v-if="carpetas && carpetas.length === 0" class="mensaje-vacio">
         <p style="text-align: center; margin-top: 2rem; color: gray;">
           Todavía no hay carpetas
         </p>
@@ -31,10 +31,10 @@
 
   } from '../js/carpetas.js';
   
-  
+  import { useOpcionesStore } from '@/stores/store'; 
   import { vistaActual, cambiarVista } from '@/components/js/principalViewLogic';
   
-  import { watch, onMounted } from 'vue';
+  import { watch, onMounted, computed  } from 'vue';
   
   export default {
     name: 'compartidosdir_view',
@@ -46,7 +46,8 @@
     },
     setup(props, { emit }) {
 
-  
+      const opcionesStore = useOpcionesStore();
+      const mostrarOpciones = computed(() => opcionesStore.mostrarOpciones);
       const abrirCarpeta = (carpeta) => {
         // console.log('📁 ID carpeta:', carpeta.idDIRECTORY);
         // console.log('📂 Path carpeta:', carpeta.path);
@@ -74,7 +75,8 @@
         carpetas,
         abrirCarpeta,
         cerrarVentana,
-        cargarCarpetasCompartidas
+        cargarCarpetasCompartidas,
+        mostrarOpciones
       };
     },
   };
@@ -82,5 +84,4 @@
   
   <style scoped>
   @import url('../style/lista.css');
-  </style>
-  
+</style>

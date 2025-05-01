@@ -50,7 +50,7 @@ const manejarArchivo = (event) => {
         resolve({
           name: archivo.name,
           type: archivo.type,
-          size: archivo.size,
+          bytes: archivo.size,
           base64: reader.result,
         });
       };

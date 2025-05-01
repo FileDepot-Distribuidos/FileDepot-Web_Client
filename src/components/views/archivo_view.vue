@@ -24,7 +24,7 @@
       ></i>
 
       <!-- Menú de opciones -->
-      <div v-if="archivoSeleccionadoId === archivo.idFILE" class="opciones" @click.stop>
+      <div v-if="archivoSeleccionadoId === archivo.idFILE && mostrarOpciones" class="opciones" @click.stop>
         <div class="conte">
           <p @click="leerArchivo(archivo.idFILE)">
             <i class="pi pi-eye" style="margin-right: 8px;"></i> Ver archivo
@@ -44,6 +44,17 @@
           </p>
           <p @click="eliminarArchivoDesdeVista(archivo.idFILE)">
             <i class="pi pi-trash" style="margin-right: 8px;"></i> Eliminar archivo
+          </p>
+        </div>
+      </div>
+      <div v-if="archivoSeleccionadoId === archivo.idFILE && !mostrarOpciones" class="opciones" @click.stop>
+        <div class="conte">
+          <p @click="leerArchivo(archivo.idFILE)">
+            <i class="pi pi-eye" style="margin-right: 8px;"></i> Ver archivo
+          </p>
+        
+          <p @click="descargarArchivo(archivo.idFILE)">
+            <i class="pi pi-download" style="margin-right: 8px;"></i> Descargar archivo
           </p>
         </div>
       </div>
@@ -136,25 +147,27 @@ import {
   descargarArchivo as descargarArchivoDesdeJS,
   moverArchivo,
   leerArchivo as leerArchivoDesdeJS,
-
 } from '../js/archivos.js';
 import { directorioActualId } from '../js/principalViewLogic.js';
-// import Carpeta_view from './carpeta_view.vue';
 import {
   carpetas,
   cargarCarpetas,
   listarTodosLosDirectorios,
-  todasLasCarpetas
+  todasLasCarpetas,
 } from '../js/carpetas.js';
 import { ref, onMounted, computed, watch } from 'vue';
+import { useOpcionesStore } from '@/stores/store'; // Importa el store de opciones
 
 export default {
   name: 'archivo_view',
   props: {
-    idDirectorio: { type: Number, default: null }
+    idDirectorio: { type: Number, default: null },
   },
   emits: ['actualizarTotal'],
   setup(props, { emit }) {
+    // Computed property para obtener el estado desde Pinia
+    const opcionesStore = useOpcionesStore();
+    const mostrarOpciones = computed(() => opcionesStore.mostrarOpciones);
 
     const carpetasParaMover = computed(() =>
       todasLasCarpetas.value.filter(c => c.idDIRECTORY !== directorioActualId.value)
@@ -174,12 +187,10 @@ export default {
         await compartirArchivo(archivo.idFILE, emailCompartir.value);
         emailCompartir.value = '';
         cerrarVentana(); // <- esto cierra el modal
-
       } else {
         console.error('No se ha seleccionado archivo para compartir.');
       }
     };
-    
 
     const obtenerIcono = (tipo) => {
       if (!tipo) return 'pi pi-file';
@@ -201,12 +212,12 @@ export default {
     };
 
     const verArchivo = () => console.log('Ver archivo');
-    const descargarArchivo = idFILE => descargarArchivoDesdeJS(idFILE);
-    const leerArchivo = idFILE => leerArchivoDesdeJS(idFILE);
+    const descargarArchivo = (idFILE) => descargarArchivoDesdeJS(idFILE);
+    const leerArchivo = (idFILE) => leerArchivoDesdeJS(idFILE);
 
-    const abrirVentanaRenombrar = archivo => togglePopup('renombrar', archivo);
-    const abrirVentanaCompartir = archivo => togglePopup('compartir', archivo);
-    const abrirVentanaMover = archivo => {
+    const abrirVentanaRenombrar = (archivo) => togglePopup('renombrar', archivo);
+    const abrirVentanaCompartir = (archivo) => togglePopup('compartir', archivo);
+    const abrirVentanaMover = (archivo) => {
       togglePopup('mover', archivo);
       selectedMoveFolder.value = null;
       listarTodosLosDirectorios();
@@ -226,7 +237,7 @@ export default {
       cerrar_ventana();
     };
 
-    const eliminarArchivoDesdeVista = id => {
+    const eliminarArchivoDesdeVista = (id) => {
       if (confirm('¿Estás seguro de que deseas eliminar este archivo?')) {
         eliminarArchivo(id);
       }
@@ -234,34 +245,34 @@ export default {
 
     const calcularTotalTamano = () => {
       let total = 0;
-      archivos.value.forEach(a => {
+      archivos.value.forEach((a) => {
         let p = a.parsedSize;
-        if (p.includes('KB')) p = parseFloat(p)/1024;
+        if (p.includes('KB')) p = parseFloat(p) / 1024;
         else p = parseFloat(p);
         if (!isNaN(p)) total += p;
       });
       emit('actualizarTotal', total);
     };
 
-     // Efectos
-     watch(archivos, calcularTotalTamano);
+    // Efectos
+    watch(archivos, calcularTotalTamano);
 
-// Observamos el cambio en el idDirectorio y cargamos los archivos y carpetas correspondientes
-watch(
-  () => props.idDirectorio,
-  (nuevoIdDirectorio) => {
-    cargarArchivos(nuevoIdDirectorio); // Cargar los archivos del nuevo directorio
-    cargarCarpetas(nuevoIdDirectorio);  // Cargar las carpetas del nuevo directorio
-    calcularTotalTamano();
-  },
-  { immediate: true }  // Ejecutar al montar el componente también
-);
+    // Observamos el cambio en el idDirectorio y cargamos los archivos y carpetas correspondientes
+    watch(
+      () => props.idDirectorio,
+      (nuevoIdDirectorio) => {
+        cargarArchivos(nuevoIdDirectorio); // Cargar los archivos del nuevo directorio
+        cargarCarpetas(nuevoIdDirectorio); // Cargar las carpetas del nuevo directorio
+        calcularTotalTamano();
+      },
+      { immediate: true } // Ejecutar al montar el componente también
+    );
 
-onMounted(() => {
-  cargarArchivos(props.idDirectorio);
-  cargarCarpetas(props.idDirectorio);
-  calcularTotalTamano();
-});
+    onMounted(() => {
+      cargarArchivos(props.idDirectorio);
+      cargarCarpetas(props.idDirectorio);
+      calcularTotalTamano();
+    });
 
     return {
       archivos,
@@ -291,9 +302,10 @@ onMounted(() => {
       leerArchivo,
       carpetasParaMover,
       todasLasCarpetas,
-      listarTodosLosDirectorios
+      listarTodosLosDirectorios,
+      mostrarOpciones, // Agregar la propiedad computed
     };
-  }
+  },
 };
 </script>
 

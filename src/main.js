@@ -6,9 +6,11 @@ import 'primeicons/primeicons.css';
 import { useAuthStore } from './stores/authStore';
 import Toast, { POSITION } from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
+import { useOpcionesStore } from './stores/store';  // Importa el store de opciones
 
 const app = createApp(App);
 const pinia = createPinia();
+
 app.use(pinia);
 app.use(router);
 app.use(Toast, {
@@ -21,6 +23,7 @@ app.use(Toast, {
 });
 
 const auth = useAuthStore();
+const opcionesStore = useOpcionesStore();  // Usamos el store de opciones
 
 // No montes hasta saber si está autenticado
 auth.checkAuth().then(() => {
@@ -41,4 +44,13 @@ auth.checkAuth().then(() => {
   }
 
   app.mount('#app');
+});
+
+// Observa la navegación para actualizar el estado del store según la ruta
+router.beforeEach((to, from, next) => {
+  if (from.path === '/compartidosdir' && to.path === '/archivos') {
+    // Cuando vayas desde compartidosdir_view.vue a archivos_view.vue, ocultamos las opciones
+    opcionesStore.ocultarOpciones();
+  }
+  next();
 });

@@ -154,31 +154,21 @@ export default {
         idPadreCarpeta.value = primero.id;
         pathdirectorio.value = primero.path.replace(/\/+$/, "");
         directorioActualId.value = primero.id;
-        directorioActualPath.value = primero.path;
+        directorioActualPath.value = primero.path; // ✅ sincronizar path global
       }
 
-      // Cuando presionas recargar (o F5), antes de recargar la página, marca en sessionStorage
-      window.addEventListener('beforeunload', (event) => {
-        console.log(event);
-        
-        sessionStorage.setItem('isPageReloaded', 'true');
-      });
-
-      // Cuando la página ya se recargó, limpia esa marca
+      // Verificar si la página se recargó o se cerró la pestaña
       if (sessionStorage.getItem('isPageReloaded') === 'true') {
         sessionStorage.removeItem('isPageReloaded');
       } else {
-        // Si no hay marca, es un cierre real de pestaña o ventana
-        window.addEventListener('unload', logoutOnClose);
+        window.addEventListener('beforeunload', logoutOnClose);
       }
     });
 
-
     // Limpiar el evento cuando el componente se destruye
     onBeforeUnmount(() => {
-      window.removeEventListener('unload', logoutOnClose);
+      window.removeEventListener('beforeunload', logoutOnClose);
     });
-
 
     const logoutOnClose = async () => {
       if (sessionStorage.getItem('isPageReloaded') !== 'true') {
